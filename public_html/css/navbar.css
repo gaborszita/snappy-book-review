@@ -1,0 +1,12 @@
+.navbar-custom-1 {
+    background-color: #ff6600;
+}
+
+.navbar-custom-1 .nav-link,
+.navbar-custom-1 .navbar-brand {
+    color: black;
+}
+
+#login-button, #signup-button, #logout-button { 
+    display: none; 
+}

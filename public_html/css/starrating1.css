@@ -1,0 +1,18 @@
+.rating-css > input {
+    display: none;
+}
+.rating-css > label:before {
+    font-size: 30px;
+    text-shadow: 1px 1px 0;
+    cursor: pointer;
+}
+.rating-css > label {
+    color: #838383;
+}
+.rating-css > input:checked ~ label{
+    color: #ffe400;
+}
+.rating-css label:active {
+    transform: scale(0.8);
+    transition: 0.3s ease;
+}
