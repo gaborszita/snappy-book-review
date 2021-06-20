@@ -1,5 +1,5 @@
 <?php
-require_once('../../../resources/config.php');
+require_once('../../../../resources/config.php');
 
 if (isset( $_COOKIE[session_name()]))
     setcookie( session_name(), "", time()-3600, "/");

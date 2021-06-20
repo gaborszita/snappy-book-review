@@ -1,0 +1,85 @@
+/* Main page CSS */
+body {
+    background-image: url('/img/lotsofbooksbackground.jpg');
+}  
+
+.maincontainer {
+    width: 95%;
+    max-width: 1280px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.nojswarning {
+    margin: 0px;
+    text-align: center;
+}
+
+.middlealign {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Navigation bar css */
+.navbar-custom-1 {
+    background-color: #ff6600;
+    z-index: 10;
+}
+
+.navbar-custom-1 .nav-link,
+.navbar-custom-1 .navbar-brand {
+    color: black;
+}
+
+#login-button, #signup-button, #logout-button { 
+    display: none; 
+}
+
+/* Rating css */
+.rating-star-css {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-star-css > input {
+    display: none;
+}
+.rating-star-css > label:before {
+    font-size: 30px;
+    text-shadow: 1px 1px 0;
+    cursor: pointer;
+}
+.rating-star-css > label {
+    color: #838383;
+}
+.rating-star-css > input:checked ~ label{
+    color: #ffe400;
+}
+.rating-star-css-dynamic label:active {
+    transform: scale(0.8);
+    transition: 0.3s ease;
+}
+
+.rating-number {
+    margin: 3px;
+    font-size: 24px;
+}
+
+.review-comment-name {
+    color: #595959;
+    font-size: 90%;
+}
+
+.leave-review-box {
+    margin: 5px 0px 5px 0px;
+    padding: 7px;
+}
+
+/* Information box CSS */
+.infobox {
+    margin: 10px;
+}

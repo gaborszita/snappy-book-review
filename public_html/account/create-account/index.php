@@ -7,6 +7,8 @@
     <?php
         require(TEMPLATES_PATH . '/main_site/head.php');
     ?>
+</head>
+<body>
     <script>
         <?php require(TEMPLATES_PATH . '/js/commonUIjs.php'); ?>
         function formsubmit(infobox) {
@@ -76,8 +78,6 @@
             xhttp.send(formData);
         }
     </script>
-</head>
-<body>
     <?php
         require(TEMPLATES_PATH . '/main_site/nav.php');
     ?>

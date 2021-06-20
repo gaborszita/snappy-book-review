@@ -1,10 +1,10 @@
 function errorMessage(infobox, message) {
-    infobox.innerHTML = '<div class="alert alert-danger" role="alert" style="margin: 10px;"> '
+    infobox.innerHTML = '<div class="alert alert-danger infobox" role="alert"> '
     + message + 
     '</div>';
 }
 function successMessage(infobox, message) {
-    infobox.innerHTML = '<div class="alert alert-success" role="alert" style="margin: 10px;"> '
+    infobox.innerHTML = '<div class="alert alert-success infobox" role="alert"> '
     + message + 
     '</div>';
 }

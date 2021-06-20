@@ -1,10 +1,10 @@
 <noscript>
-    <div class="alert alert-warning" role="alert" style="margin: 0px; text-align: center;">
+    <div class="alert alert-warning nojswarning" role="alert">
         Your browser has javascript disabled. Some site features may not work properly.
     </div>
 </noscript>
 
-<nav class="navbar navbar-expand-lg navbar-light navbar-custom-1" style="z-index: 10">
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom-1">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Snappy Book Review</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@
                                         checkLogin();
                                     }
                                 };
-                                xhttp.open('GET', '/account/log-out/', true);
+                                xhttp.open('GET', '/account/log-out/submit/', true);
                                 xhttp.send();
                             });
                     </script>

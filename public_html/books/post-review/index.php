@@ -7,13 +7,13 @@
     <?php
         require(TEMPLATES_PATH . '/main_site/head.php');
     ?>
-    <link rel="stylesheet" href="/css/starrating1.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <script>
         if (!checkLogin()) {
             window.location.replace('/account/log-in/');
         }
     </script>
+</head>
+<body>
     <script>
         <?php require(TEMPLATES_PATH . '/js/commonUIjs.php'); ?>
         let isbnValid = false;
@@ -74,8 +74,6 @@
             xhttp.send(formData);
         }
     </script>
-</head>
-<body>
     <?php
         require(TEMPLATES_PATH . '/main_site/nav.php');
     ?>
@@ -96,7 +94,7 @@
             </script>
             <div class="mb-3">
                 <label for="rating" class="form-label">Rating</label>
-                <div class="rating-css d-flex flex-row-reverse" style="justify-content: flex-end;">
+                <div class="rating-star-css rating-star-css-dynamic">
                     <input type="radio" name="rating" id="rating5">
                     <label for="rating5" class="fa fa-star"></label>
                     <input type="radio" name="rating" id="rating4">

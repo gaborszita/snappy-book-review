@@ -76,8 +76,8 @@
     <?php
         require(TEMPLATES_PATH . '/main_site/head.php');
     ?>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/starrating1.css">
+</head>
+<body>
     <script>
         <?php require(TEMPLATES_PATH . '/js/commonUIjs.php'); ?>
         function formsubmit(infobox) {
@@ -115,18 +115,17 @@
             xhttp.send(formData);
         }
     </script>
-</head>
-<body>
+
     <?php
         require(TEMPLATES_PATH . '/main_site/nav.php');
     ?>
 
-    <div class="shadow p-3 mb-5 bg-white rounded middlealign maincontainer">
+    <div class="shadow p-3 mb-5 bg-white rounded maincontainer">
         <h1><?php echo $author . ": " . $title?></h1>
         <table>
             <tr>
                 <td>
-                    <div class="rating-css d-flex flex-row-reverse" style="justify-content: flex-end;">
+                    <div class="rating-star-css">
                         <input type="radio" id="rating5book" disabled <?php echo $starRating==5 ? 'checked' : ''; ?>>
                         <label for="rating5book" class="fa fa-star"></label>
                         <input type="radio" id="rating4book" disabled <?php echo $starRating==4 ? 'checked' : ''; ?>>
@@ -140,16 +139,16 @@
                     </div>
                 </td>
                 <td>
-                    <p style="margin: 3px; font-size: 24px;"><?php echo $rating; ?></p>
+                    <p class="rating-number"><?php echo $rating; ?></p>
                 </td>
             </tr>
         </table>
-        <button type="button" class="btn btn-primary" id="leavereviewbtn">Leave review</button>
-        <div id="reviewformdiv" class="border border-primary rounded" style="display: none; margin: 5px 0px 5px 0px; padding: 7px;">
+        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#reviewformcontainer" aria-expanded="false" aria-controls="reviewformcontainer">Leave review</button>
+        <div id="reviewformcontainer" class="border border-primary rounded collapse leave-review-box">
             <form id="reviewform">
                 <div class="mb-3">
                     <label for="rating" class="form-label">Rating</label>
-                    <div class="rating-css d-flex flex-row-reverse" style="justify-content: flex-end;">
+                    <div class="rating-star-css rating-star-css-dynamic">
                         <input type="radio" name="rating" id="rating5">
                         <label for="rating5" class="fa fa-star"></label>
                         <input type="radio" name="rating" id="rating4">
@@ -176,35 +175,17 @@
                         formsubmit(document.getElementById('formSubmitInfo'));
                     });
             </script>
-            <a href="#" id="collapsebtn"><i class="fa fa-arrow-up" aria-hidden="true"></i>Collapse</a>
-            <script>
-                document.getElementById('collapsebtn').addEventListener('click', 
-                    function() {
-                        event.preventDefault();
-                        document.getElementById('reviewformdiv').style.display = 'none';
-                    });
-            </script>
         </div>
-        <script>
-            document.getElementById('leavereviewbtn').addEventListener('click',  
-                function() {
-                    event.preventDefault();
-                    if (!checkLogin()) {
-                        window.location.replace('/account/log-in/');
-                    }
-                    document.getElementById('reviewformdiv').style.display = 'block';
-                });
-        </script>
         <p></p>
         <h4>Reviews:</h4>
         <?php 
             for ($i=0; $i<count($comments); $i++) {
                 $comment = $comments[$i];
-                echo '<span style="color: #595959; font-size: 90%;">' . 
+                echo '<span class="review-comment-name">' . 
                     $comment->firstname . ' ' . $comment->lastname . '</span>';
                 $commentRating = $comment->rating;
         ?>
-            <div class="rating-css d-flex flex-row-reverse" style="justify-content: flex-end;">
+            <div class="rating-star-css">
                 <input type="radio" id="rating5comment<?php echo $i; ?>" disabled <?php echo $commentRating==5 ? 'checked' : ''; ?>>
                 <label for="rating5comment<?php echo $i; ?>" class="fa fa-star"></label>
                 <input type="radio" id="rating4comment<?php echo $i; ?>" disabled <?php echo $commentRating==4 ? 'checked' : ''; ?>>
