@@ -1,0 +1,7 @@
+# Ignore config.php as it contains database login info
+resources/config.php
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
