@@ -1,10 +1,9 @@
 <?php
 
-defined("TEMPLATES_PATH")
-    or define("TEMPLATES_PATH", realpath(dirname(__FILE__) . '/templates'));
+// Config user should modify START
 
 defined("GLOBAL_DOMAIN_NAME")
-    or define ("GLOBAL_DOMAIN_NAME", 'bookreviewpi.local');
+    or define ("GLOBAL_DOMAIN_NAME", 'example.com');
 
 defined("GLOBAL_URI")
     or define ("GLOBAL_URI", 'http://' . GLOBAL_DOMAIN_NAME . '/');
@@ -21,3 +20,9 @@ $config = array(
         'no-reply-adress' => 'no-reply@' . GLOBAL_DOMAIN_NAME
     )
     );
+
+// Config user should modify END
+// Please only edit the following lines if you know what you're doing!
+
+defined("TEMPLATES_PATH")
+    or define("TEMPLATES_PATH", realpath(dirname(__FILE__) . '/templates'));
