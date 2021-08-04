@@ -1,0 +1,43 @@
+{
+  "name": "snappy-book-review",
+  "version": "0.2.0",
+  "description": "A little book website written in TypeScript.",
+  "main": "dist/server.js",
+  "scripts": {
+    "setup": "ts-node setup.ts",
+    "clean": "rimraf dist/*",
+    "build-tsc": "tsc",
+    "build-sass": "sass src/public/sass/build:dist/public/css",
+    "build": "npm run clean && npm run lint && npm run build-tsc && npm run build-sass && npm run copy-assets && echo \"Build completed successfully.\"",
+    "copy-assets": "ts-node copyAssets.ts",
+    "lint": "tsc --noEmit && eslint . --ext .ts --fix",
+    "serve-debug": "nodemon --inspect dist/server.js",
+    "serve": "node dist/server.js",
+    "start": "npm run serve",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabor Szita",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.3"
+  },
+  "devDependencies": {
+    "@types/errorhandler": "^1.5.0",
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.3.3",
+    "@types/shelljs": "^0.8.9",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint": "^7.31.0",
+    "nodemon": "^2.0.12",
+    "rimraf": "^3.0.2",
+    "sass": "^1.35.2",
+    "shelljs": "^0.8.4",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}
