@@ -1,0 +1,150 @@
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../../../node_modules/bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap/scss/root";
+
+// 4. Include any optional Bootstrap CSS as needed
+@import "../../../node_modules/bootstrap/scss/navbar";
+@import "../../../node_modules/bootstrap/scss/nav";
+@import "../../../node_modules/bootstrap/scss/transitions";
+@import "../../../node_modules/bootstrap/scss/containers";
+@import "../../../node_modules/bootstrap/scss/forms";
+@import "../../../node_modules/bootstrap/scss/buttons";
+
+
+// 6. Add additional custom code here
+
+// main and body
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
+
+// navigation bar
+
+.sbr-navbar {
+  @extend .navbar;
+  @extend .navbar-expand-lg;
+  @extend .navbar-light;
+  background-color: #ff6600;
+}
+
+.sbr-navbar ul {
+  margin-top: 0;
+}
+
+.sbr-navbar .sbr-navbar-container {
+  @extend .container-fluid;
+}
+
+.sbr-navbar .sbr-navbar-brand {
+  @extend .navbar-brand;
+}
+
+.sbr-navbar .sbr-navbar-toggler {
+  @extend .navbar-toggler;
+}
+
+.sbr-navbar .sbr-navbar-toggler span {
+  @extend .navbar-toggler-icon;
+}
+
+.sbr-navbar .sbr-navbar-collapse {
+  @extend .navbar-collapse;
+}
+
+.sbr-navbar .sbr-navbar-collapse ul {
+  @extend .navbar-nav;
+}
+
+.sbr-navbar .sbr-navbar-collapse li {
+  @extend .nav-item;
+}
+
+.sbr-navbar .sbr-navbar-collapse li a {
+  @extend .nav-link;
+}
+
+.sbr-navbar .sbr-navbar-space-right {
+  margin-right: auto;
+}
+
+.sbr-navbar .sbr-navbar-search {
+  display: flex;
+}
+
+.sbr-navbar .sbr-navbar-search input {
+  @extend .form-control;
+  margin-right: .5rem;
+}
+
+.sbr-navbar .sbr-navbar-search button {
+  @extend .btn;
+  @extend .btn-outline-success;
+}
+
+// main container
+
+.sbr-maincontainer {
+  width: 95%;
+  max-width: 1280px;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: .25rem;
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+// middle align
+
+.sbr-middlealign {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// forms
+
+.sbr-form .sbr-form-field {
+  margin-bottom: 1rem;
+}
+
+.sbr-form .sbr-form-label {
+  @extend .form-label;
+}
+
+.sbr-form .sbr-form-control {
+  @extend .form-control;
+}
+
+.sbr-form .sbr-form-text {
+  @extend .form-text;
+}
+
+.sbr-form .sbr-form-submit-btn {
+  @extend .btn;
+  @extend .btn-primary;
+}
+
+// other minor stuff
+
+.sbr-text-center {
+  text-align: center;
+}

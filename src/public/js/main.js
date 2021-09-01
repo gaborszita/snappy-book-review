@@ -1,0 +1,1 @@
+require('../../public_source/js/main.js');

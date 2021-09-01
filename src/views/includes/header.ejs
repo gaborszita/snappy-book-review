@@ -1,1 +1,31 @@
 <!-- header -->
+<nav class="sbr-navbar">
+  <div class="sbr-navbar-container">
+    <a class="sbr-navbar-brand" href="/">Snappy Book Review</a>
+    <button class="sbr-navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sbr-navbar-main-dropdown">
+      <span></span>
+    </button>
+    <div class="sbr-navbar-collapse collapse" id="sbr-navbar-main-dropdown">
+      <ul class="sbr-navbar-space-right">
+         <li>
+            <a href="/">Home</a>
+         </li>
+      </ul>
+      <form class="sbr-navbar-search sbr-navbar-space-right" action="/search" method="get">
+         <input name="q" type="search" placeholder="Search for a book">
+         <button type="submit">Search</button>
+      </form>
+      <ul>
+         <li>
+            <a id="login-button" href="/account/log-in">Log in</a>
+         </li>
+         <li>
+            <a id="signup-button" href="/account/create-account/">Create account</a>
+         </li>
+         <li>
+            <a id="logout-button" href="/">Log out</a>
+         </li>
+      </ul>
+    </div>
+  </div>
+</nav>
