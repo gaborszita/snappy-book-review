@@ -3,7 +3,12 @@ import session from 'express-session';
 import errorHandler from 'errorhandler';
 import path from 'path';
 import { config } from './util/config';
+//import { } from './util/passport';
+require('./util/passport');
 import mongoose from 'mongoose';
+import passport from 'passport';
+import { default as connectMongoDBSession } from 'connect-mongodb-session';
+const MongoDBStore = connectMongoDBSession(session);
 
 // controllers
 import * as pagesController from './controllers/pages';
@@ -45,6 +50,18 @@ app.use(function(req, res, next) {
   )
 });
 
+app.use(session({ 
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoDBStore ({
+    uri: mongoUrl,
+    collection: "sessions"
+  })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Express configuration
 app.set('port', process.env.PORT || 3000); // default port 3000
 app.set('views', path.join(__dirname, './views/pages'));
@@ -55,6 +72,8 @@ app.use(express.static(path.join(__dirname, './public')));
 
 // Primary app routes
 app.get('/', pagesController.home);
+app.get('/account/log-in', pagesController.login);
+app.post('/account/log-in/submit', pagesController.loginSubmit);
 
 // 404 error
 app.use(function(req, res) {
