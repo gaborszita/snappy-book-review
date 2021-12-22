@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include ('../../includes/head') %>
+    <title>Log in - Snappy Book Review</title>
+  </head>
+  <body>
+    <%- include('../../includes/header') %>
+    <div class="sbr-maincontainer">
+      <h1>Log in</h1>
+      <p>Don't have an account? Click <a href="/account/create-account/">here</a> to create one.</p>
+      <form class="sbr-form" id="loginform">
+        <div class="sbr-form-field">
+          <label for="email" class="sbr-form-label">Email adress</label>
+          <input type="email" class="sbr-form-control" id="email">
+        </div>
+        <div class="sbr-form-field">
+          <label for="password" class="sbr-form-label">Password</label>
+          <input type="password" class="sbr-form-control" id="password">
+        </div>
+        <button type="submit" class="sbr-form-submit-btn">Log in</button>
+      </form>
+      <div id="formSubmitInfo"></div>
+    </div>
+    <%- include('../../includes/footer') %>
+    <script>
+      function formsubmit(infobox) {
+        const email = document.getElementById('email').value;
+        if (email == '') {
+          Common.CommonUI.errorMessage(infobox, 'Email is required.');
+          return;
+        }
+        const password = document.getElementById('password').value;
+        if (password == '') {
+          Common.CommonUI.errorMessage(infobox, 'Password is required.');
+          return;
+        }
+        Common.CommonUI.loadingIcon(infobox);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            Common.CommonUI.successMessage(infobox, this.responseText);
+            checkLogin();
+          }
+          else if (this.readyState == 4) {
+            Common.CommonUI.errorMessage(infobox, this.responseText);
+          }
+        };
+        xhttp.open('POST', '<%= config.siteUrl %>/account/log-in/submit', true);
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        xhttp.send(formData);
+      }
+    </script>
+    <script>
+      document.getElementById('loginform').addEventListener('submit',  
+          function() {
+              event.preventDefault();
+              formsubmit(document.getElementById('formSubmitInfo'));
+          });
+    </script>
+  </body>
+</html>
