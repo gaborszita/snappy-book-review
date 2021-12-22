@@ -1,1 +1,1 @@
-require('bootstrap/js/src/collapse.js');
+export * from 'bootstrap/js/src/collapse.js';

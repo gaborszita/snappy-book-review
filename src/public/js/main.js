@@ -1,1 +1,1 @@
-require('../../public_source/js/main.js');
+export * from '../../public_source/js/main.js';
