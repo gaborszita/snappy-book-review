@@ -5,6 +5,9 @@ module.exports = {
   entry: './src/public/js/main.js',
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist/public/js')
-  }
+    path: path.resolve(__dirname, 'dist/public/js'),
+    library: 'Common',
+    libraryTarget:'umd'
+  },
+  stats: 'errors-warnings'
 }
