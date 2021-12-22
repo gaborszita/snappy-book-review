@@ -9,31 +9,18 @@
 @import "../../../node_modules/bootstrap/scss/root";
 
 // 4. Include any optional Bootstrap CSS as needed
+@import "../../../node_modules/bootstrap/scss/reboot";
 @import "../../../node_modules/bootstrap/scss/navbar";
 @import "../../../node_modules/bootstrap/scss/nav";
 @import "../../../node_modules/bootstrap/scss/transitions";
 @import "../../../node_modules/bootstrap/scss/containers";
 @import "../../../node_modules/bootstrap/scss/forms";
 @import "../../../node_modules/bootstrap/scss/buttons";
+@import "../../../node_modules/bootstrap/scss/alert";
+@import "../../../node_modules/bootstrap/scss/spinners";
 
 
 // 6. Add additional custom code here
-
-// main and body
-
-*, ::after, ::before {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 400;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 500;
-}
 
 // navigation bar
 
@@ -141,6 +128,33 @@ h1, h2, h3, h4, h5, h6 {
 .sbr-form .sbr-form-submit-btn {
   @extend .btn;
   @extend .btn-primary;
+}
+
+// common UI
+
+.sbr-infobox {
+  margin: 10px;
+}
+
+.sbr-error-message {
+  @extend .alert;
+  @extend .alert-danger;
+  @extend .sbr-infobox;
+}
+
+.sbr-success-message {
+  @extend .alert;
+  @extend .alert-success;
+  @extend .sbr-infobox;
+}
+
+.sbr-loading-icon {
+  @extend .spinner-border;
+  color: $blue;
+}
+
+.sbr-loading-icon span {
+  @include visually-hidden;
 }
 
 // other minor stuff
