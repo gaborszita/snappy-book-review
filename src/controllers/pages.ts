@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 
 /**
@@ -25,7 +25,7 @@ export const loginSubmit = (req: Request, res: Response, next: NextFunction): vo
   /*passport.authenticate('local', { successRedirect: '/',
                                  failureRedirect: '/login',
                                  failureFlash: true });*/
-  passport.authenticate("local", (err: Error, user, info) => {
+  passport.authenticate('local', (err: Error, user, info) => {
     if (err) { return next(err); }
     if (!user) {
       return res.status(400).send('Invalid email/password');
