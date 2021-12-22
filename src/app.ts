@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
+import errorHandler from 'errorhandler';
 import path from 'path';
 import { config } from './util/config';
 import mongoose from 'mongoose';
