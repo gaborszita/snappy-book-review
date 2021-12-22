@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-export interface IConfig {
+export interface IConfig extends Document {
   sitePreferredProtocol: string,
   siteAddress: string
   siteUrl: string
