@@ -50,6 +50,9 @@ app.use(function(req, res, next) {
   )
 });
 
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 app.use(session({ 
   secret: 'keyboard cat',
   resave: false,
