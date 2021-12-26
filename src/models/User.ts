@@ -33,19 +33,21 @@ const UserSchema = new Schema<IUser>({
 
 // hash password
 UserSchema.pre('save', function(next) {
+  const user = this as IUser;
+
   // only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) return next();
+  if (!user.isModified('password')) return next();
 
   // generate a salt
   bcrypt.genSalt(10, function(err, salt) {
     if (err) return next(err);
 
     // hash the password along with our new salt
-    bcrypt.hash(this.password, salt, function(err, hash) {
+    bcrypt.hash(user.password, salt, function(err, hash) {
         if (err) return next(err);
 
         // override the cleartext password with the hashed one
-        this.password = hash;
+        user.password = hash;
         next();
     });
   });
