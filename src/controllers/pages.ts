@@ -14,15 +14,15 @@ export const home = (req: Request, res: Response): void => {
  * Login page.
  * @route GET /account/log-in
  */
-export const login = (req: Request, res: Response): void => {
-  res.render('account/login');
+export const logIn = (req: Request, res: Response): void => {
+  res.render('account/log-in');
 };
 
 /**
  * Login submit page.
  * @route POST /account/log-in/submit
  */
-export const loginSubmit = (req: Request, res: Response, next: NextFunction): void => {
+export const logInSubmit = (req: Request, res: Response, next: NextFunction): void => {
   /*passport.authenticate('local', { successRedirect: '/',
                                  failureRedirect: '/login',
                                  failureFlash: true });*/

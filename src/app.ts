@@ -75,8 +75,8 @@ app.use(express.static(path.join(__dirname, './public')));
 
 // Primary app routes
 app.get('/', pagesController.home);
-app.get('/account/log-in', pagesController.login);
-app.post('/account/log-in/submit', pagesController.loginSubmit);
+app.get('/account/log-in', pagesController.logIn);
+app.post('/account/log-in/submit', pagesController.logInSubmit);
 app.get('/account/create-account', pagesController.createAccount);
 app.post('/account/create-account/submit', pagesController.createAccountSubmit);
 
