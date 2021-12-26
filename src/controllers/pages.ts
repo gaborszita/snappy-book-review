@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { IUser, User, AccountState } from '../models/User';
 import passport from 'passport';
 
 /**
@@ -36,3 +37,37 @@ export const loginSubmit = (req: Request, res: Response, next: NextFunction): vo
     });
   })(req, res, next);
 };
+
+/**
+ * Create account page.
+ * @route GET /account/sign-up
+ */
+export const createAccount = (req: Request, res: Response): void => {
+  res.render('account/create-account');
+};
+
+/**
+ * Create account submit page.
+ * @route POST /account/sign-up/submit
+ */
+export const createAccountSubmit = async (req: Request, res: Response): Promise<void> => {
+  console.log(req.body);
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const user = new User({
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
+    accountState: AccountState.Active,
+    emailVerificationLink: 'none',
+    passwordResetLink: 'none'
+  });
+
+  await user.save();
+
+  console.log('account created');
+}

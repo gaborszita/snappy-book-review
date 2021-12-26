@@ -77,6 +77,8 @@ app.use(express.static(path.join(__dirname, './public')));
 app.get('/', pagesController.home);
 app.get('/account/log-in', pagesController.login);
 app.post('/account/log-in/submit', pagesController.loginSubmit);
+app.get('/account/create-account', pagesController.createAccount);
+app.post('/account/create-account/submit', pagesController.createAccountSubmit);
 
 // 404 error
 app.use(function(req, res) {
