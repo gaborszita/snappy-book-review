@@ -8,18 +8,18 @@ export enum AccountState {
 }
 
 export interface IUser extends Document {
-  firstname: string,
-  lastname: string,
+  firstName: string,
+  lastName: string,
   email: string,
   password: string,
   accountState: AccountState,
-  email_verification_link: string,
-  password_reset_link: string
+  emailVerificationLink: string,
+  passwordResetLink: string
 }
 
 const UserSchema = new Schema<IUser>({
-  firstname: { type: String, requiured: true },
-  lastname: { type: String, required: true },
+  firstName: { type: String, requiured: true },
+  lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   accountState: { 
@@ -27,8 +27,8 @@ const UserSchema = new Schema<IUser>({
     enum: Object.values(AccountState),
     required: true
   },
-  email_verification_link: { type: String, required: true },
-  password_reset_link: { type: String, required: true }
+  emailVerificationLink: { type: String, required: true },
+  passwordResetLink: { type: String, required: true }
 });
 
 // hash password
