@@ -63,8 +63,6 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     res.status(400).send("Invalid data");
     return;
   }
-  
-  console.log(req.body);
 
   const user = new User({
     firstName: req.body.firstName,
@@ -79,13 +77,11 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
   User.findOne({ email: req.body.email }, function(err, existingUser) {
     if (err) { return next(err) }
     if (existingUser) {
-      res.send('An account with this email address already exists');
+      res.status(400).send('An account with this email address already exists');
       return;
     }
     user.save((err) => {
       if (err) { return next(err); }
     });
   });
-
-  console.log('account created');
 }

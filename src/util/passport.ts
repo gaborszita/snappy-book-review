@@ -4,11 +4,9 @@ import { User, IUser } from '../models/User';
 
 const LocalStrategy = passportLocal.Strategy;
 
-console.log('file running...');
 // email and password authentication
 passport.use(new LocalStrategy ( { usernameField: 'email' },
   function(email, password, done) {
-    console.log('authenticating....');
     User.findOne({ email: email }, function(err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
