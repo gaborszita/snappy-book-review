@@ -82,6 +82,7 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     }
     user.save((err) => {
       if (err) { return next(err); }
+      res.send('Account created');
     });
   });
 }
