@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { IUser, User, AccountState } from '../models/User';
+import { body, check, validationResult } from 'express-validator';
 import passport from 'passport';
 
 /**
@@ -51,6 +52,18 @@ export const createAccount = (req: Request, res: Response): void => {
  * @route POST /account/sign-up/submit
  */
 export const createAccountSubmit = async (req: Request, res: Response): Promise<void> => {
+  await body('email').isEmail().normalizeEmail().run(req);
+  await body('password').isLength({ min: 8, max: 20 })
+  .custom((value: string) => /\d/.test(value))
+  .custom((value: string) => /[a-zA-Z]/.test(value)).run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.send("Invalid data");
+    return;
+  }
+  
   console.log(req.body);
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
