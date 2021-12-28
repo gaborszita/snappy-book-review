@@ -9,29 +9,29 @@
     <div class="sbr-maincontainer">
       <h1>Log in</h1>
       <p>Don't have an account? Click <a href="<%= config.siteUrl %>/account/create-account/">here</a> to create one.</p>
-      <form class="sbr-form" id="loginform">
+      <form class="sbr-form" id="login_form">
         <div class="sbr-form-field">
-          <label for="email" class="sbr-form-label">Email adress</label>
-          <input type="email" class="sbr-form-control" id="email">
+          <label for="email_input" class="sbr-form-label">Email adress</label>
+          <input type="email" class="sbr-form-control" id="email_input">
         </div>
         <div class="sbr-form-field">
-          <label for="password" class="sbr-form-label">Password</label>
-          <input type="password" class="sbr-form-control" id="password">
+          <label for="password_input" class="sbr-form-label">Password</label>
+          <input type="password" class="sbr-form-control" id="password_input">
         </div>
         <button type="submit" class="sbr-form-submit-btn">Log in</button>
       </form>
-      <div id="formSubmitInfo"></div>
+      <div id="form_submit_info"></div>
     </div>
     <%- include('../../includes/footer') %>
     <script>
-      function formsubmit(infobox) {
-        const email = document.getElementById('email').value;
-        if (email == '') {
+      function formSubmit(infobox) {
+        const email = document.getElementById('email_input').value;
+        if (email === '') {
           Common.CommonUI.errorMessage(infobox, 'Email is required.');
           return;
         }
-        const password = document.getElementById('password').value;
-        if (password == '') {
+        const password = document.getElementById('password_input').value;
+        if (password === '') {
           Common.CommonUI.errorMessage(infobox, 'Password is required.');
           return;
         }
@@ -46,19 +46,21 @@
             Common.CommonUI.errorMessage(infobox, this.responseText);
           }
         };
-        xhttp.open('POST', '<%= config.siteUrl %>/account/log-in/submit', true);
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        xhttp.send(formData);
+        xhttp.open('POST', '<%= config.siteUrl %>/account/log-in/submit/', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        const data = {
+          email: email,
+          password: password
+        }
+        xhttp.send(JSON.stringify(data));
       }
     </script>
     <script>
-      document.getElementById('loginform').addEventListener('submit',  
-          function() {
-              event.preventDefault();
-              formsubmit(document.getElementById('formSubmitInfo'));
-          });
+      document.getElementById('login_form').addEventListener('submit',
+        function () {
+          event.preventDefault();
+          formSubmit(document.getElementById('form_submit_info'));
+        });
     </script>
   </body>
 </html>
