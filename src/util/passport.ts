@@ -12,8 +12,14 @@ passport.use(new LocalStrategy ( { usernameField: 'email' },
     User.findOne({ email: email }, function(err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
-      return done(null, user);
+      user.verifyPassword(password, function(err, match) {
+        if (err) {return done(err); }
+        if (match) {
+          return done(null, user);
+        } else {
+          return done(null, false);
+        }
+      });
     });
   }
 ));
