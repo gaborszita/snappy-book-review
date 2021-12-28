@@ -50,6 +50,16 @@ app.use(function(req, res, next) {
   )
 });
 
+// redirect no trailing slash to trailing slash
+app.use(function(req, res, next) {
+  if (!req.path.endsWith('/') && !req.path.slice(req.path.lastIndexOf('/')+1).includes('.')) {
+    const query = req.url.slice(req.path.length);
+    res.redirect(301, req.path + '/' + query);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -75,10 +85,10 @@ app.use(express.static(path.join(__dirname, './public')));
 
 // Primary app routes
 app.get('/', pagesController.home);
-app.get('/account/log-in', pagesController.logIn);
-app.post('/account/log-in/submit', pagesController.logInSubmit);
-app.get('/account/create-account', pagesController.createAccount);
-app.post('/account/create-account/submit', pagesController.createAccountSubmit);
+app.get('/account/log-in/', pagesController.logIn);
+app.post('/account/log-in/submit/', pagesController.logInSubmit);
+app.get('/account/create-account/', pagesController.createAccount);
+app.post('/account/create-account/submit/', pagesController.createAccountSubmit);
 
 // 404 error
 app.use(function(req, res) {
