@@ -60,7 +60,7 @@ export const createAccountSubmit = async (req: Request, res: Response): Promise<
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    res.send("Invalid data");
+    res.status(400).send("Invalid data");
     return;
   }
   
