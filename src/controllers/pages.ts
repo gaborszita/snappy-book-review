@@ -51,7 +51,7 @@ export const createAccount = (req: Request, res: Response): void => {
  * Create account submit page.
  * @route POST /account/sign-up/submit
  */
-export const createAccountSubmit = async (req: Request, res: Response): Promise<void> => {
+export const createAccountSubmit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   await body('email').isEmail().normalizeEmail().run(req);
   await body('password').isLength({ min: 8, max: 20 })
   .custom((value: string) => /\d/.test(value))
@@ -65,22 +65,27 @@ export const createAccountSubmit = async (req: Request, res: Response): Promise<
   }
   
   console.log(req.body);
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const email = req.body.email;
-  const password = req.body.password;
 
   const user = new User({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    password: password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
     accountState: AccountState.Active,
     emailVerificationLink: 'none',
     passwordResetLink: 'none'
   });
 
-  await user.save();
+  User.findOne({ email: req.body.email }, function(err, existingUser) {
+    if (err) { return next(err) }
+    if (existingUser) {
+      res.send('An account with this email address already exists');
+      return;
+    }
+    user.save((err) => {
+      if (err) { return next(err); }
+    });
+  });
 
   console.log('account created');
 }
