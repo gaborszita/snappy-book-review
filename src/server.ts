@@ -2,11 +2,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import  { app } from './app';
+import  { appInit } from './app';
 
-// start the app
-const server = app.listen(app.get('port'), () => {
-  console.log('Listening on port ' + app.get('port'));
-});
-
-export { server };
+(async() => {
+  // start the app
+  const server = appInit().then(app => {
+    app.listen(app.get('port'), () => {
+      console.log('Listening on port ' + app.get('port'));
+    })
+  }).catch(error => {
+    console.error('Application failed.');
+    console.error('Error: ' + error);
+  });
+})();
