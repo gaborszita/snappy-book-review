@@ -30,6 +30,10 @@
             Your password must be 8-20 characters long, containing at least one letter and one number.
           </div>
         </div>
+        <div class="sbr-form-field">
+          <label for="verify_password_input" class="form-label">Verify password</label>
+          <input type="password" class="form-control" id="verify_password_input">
+        </div>
         <button type="submit" class="sbr-form-submit-btn">Create account</button>
         <div id="form_submit_info"></div>
       </form>
@@ -77,11 +81,11 @@
           Common.CommonUI.errorMessage(infobox, 'Password invalid. (Please check password constraints.)');
           return;
         }
-        /*const verifypassword = document.getElementById('verify_password_input').value;
-        if (password !=== verifypassword) {
+        const verifypassword = document.getElementById('verify_password_input').value;
+        if (password !== verifypassword) {
           Common.CommonUI.errorMessage(infobox, 'Passwords do not match.');
           return;
-        }*/
+        }
 
         Common.CommonUI.loadingIcon(infobox);
 
