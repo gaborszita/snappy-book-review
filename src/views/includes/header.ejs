@@ -23,8 +23,23 @@
             <a id="signup-button" href="<%= config.siteUrl %>/account/create-account/">Create account</a>
          </li>
          <li>
-            <a id="logout-button" href="<%= config.siteUrl %>/">Log out</a>
+            <a id="logout-button" href="javascript:void(0)">Log out</a>
          </li>
+         <script>
+               document.getElementById('logout-button').addEventListener('click',
+                  function () {
+                     event.preventDefault();
+                     var xhttp = new XMLHttpRequest();
+                     xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                           document.cookie = 'logged_in=false; path=/';
+                           Account.checkLogin();
+                        }
+                     };
+                     xhttp.open('POST', '<%= config.siteUrl %>/account/log-out/submit/', true);
+                     xhttp.send();
+                  });
+          </script>
       </ul>
     </div>
   </div>
