@@ -88,6 +88,7 @@ app.get('/account/log-in/', pagesController.logIn);
 app.post('/account/log-in/submit/', pagesController.logInSubmit);
 app.get('/account/create-account/', pagesController.createAccount);
 app.post('/account/create-account/submit/', pagesController.createAccountSubmit);
+app.post('/account/log-out/submit/', pagesController.logOutSubmit);
 
 // 404 error
 app.use(function(req, res) {

@@ -86,3 +86,12 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     });
   });
 }
+
+/**
+ * Log out submit page.
+ * @route POST /account/log-out/submit
+ */
+export const logOutSubmit = function(req: Request, res: Response) {
+  req.logout();
+  res.send("OK");
+}
