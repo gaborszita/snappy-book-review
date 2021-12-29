@@ -49,8 +49,19 @@ async function setup() {
   const siteAddress = await ask('Please enter your site address (e.g. ' + 
     'localhost, localhost:3000, example.com): ');
 
-  const config = { sitePreferredProtocol: sitePreferredProtocol, siteAddress: 
-    siteAddress };
+  // session secret
+  console.log('Generating session secret...');
+  let sessionSecret = '';
+  for (let i=0; i<3; i++) {
+    sessionSecret += Math.random().toString(36).substring(2, 15);
+  }
+  console.log('Done');
+
+  const config = {
+    sitePreferredProtocol: sitePreferredProtocol,
+    siteAddress: siteAddress,
+    sessionSecret: sessionSecret
+  }
 
   // ask user to confirm if the script can write the config data to the 
   // database
