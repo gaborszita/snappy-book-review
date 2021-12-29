@@ -88,7 +88,7 @@
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-            successMessage(infobox, this.responseText);
+            Common.CommonUI.successMessage(infobox, this.responseText);
           }
           else if (this.readyState == 4) {
             Common.CommonUI.errorMessage(infobox, this.responseText);
