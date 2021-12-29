@@ -157,6 +157,21 @@
   @include visually-hidden;
 }
 
+// create account
+
+.sbr-signup-form-container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.sbr-signup-form-first-name {
+  padding-right: .5rem;
+}
+
+.sbr-signup-form-last-name {
+  padding-left: .5rem;
+}
+
 // other minor stuff
 
 .sbr-text-center {
