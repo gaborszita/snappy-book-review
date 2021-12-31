@@ -13,3 +13,6 @@ backend framework isn't decided yet - that's why it is left blank.)
 This "new" version of this project is still under development. We're looking 
 forward for contributors who can help developing this project! Most 
 importantly we need a web designer!
+
+Project status:
+- 12/31/21: Basic account control (log in, create account, etc.) is now working
