@@ -60,13 +60,17 @@ export async function appInit(): Promise<express.Express> {
 
   app.use(session({
     secret: configData.sessionSecret,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
+    rolling: true,
+    name: configData.sessionCookie,
+    cookie: { maxAge: configData.sessionMaxAge },
     store: new MongoDBStore({
       uri: mongoUrl,
       collection: 'sessions'
     })
   }));
+
   app.use(passport.initialize());
   app.use(passport.session());
 
