@@ -17,8 +17,7 @@ import * as pagesController from './controllers/pages';
 export async function appInit(): Promise<express.Express> {
   const mongoUrl = process.env.MONGODB_URI;
 
-  mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, 
-    useUnifiedTopology: true } ).then(
+  mongoose.connect(mongoUrl).then(
       () => {
         // mongoose ready to use
       }
