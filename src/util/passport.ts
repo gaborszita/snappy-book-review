@@ -1,6 +1,8 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { User, IUser } from '../models/User';
+import setCookie from 'set-cookie-parser';
+import { Request, Response } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -31,3 +33,31 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
+
+export function syncSessionCookieToLoggedInCookie(req: Request, res: Response, 
+  sessionCookieName: string, loggedInCookieName: string) {
+  if (req.isAuthenticated()) {
+    const responseCookies = setCookie.parse(res.get('Set-Cookie'), {});
+    let found = false;
+    for (let i=0; i<responseCookies.length; i++) {
+      const cookie = responseCookies[i];
+      if (cookie.name===sessionCookieName) {
+        if (cookie.maxAge) {
+          res.cookie(loggedInCookieName, 'true', { maxAge: cookie.maxAge });
+        } else if (cookie.expires) {
+          res.cookie(loggedInCookieName, 'true', { expires: cookie.expires });
+        }
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      console.error("WARNING: User appears to be logged in, but couldn't " + 
+        "get session cookie and couldn't set logged in cookie.");
+    }
+  } else {
+    if (req.cookies[loggedInCookieName]) {
+      res.clearCookie(loggedInCookieName);
+    }
+  }
+}

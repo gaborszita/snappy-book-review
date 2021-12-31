@@ -3,9 +3,10 @@ import session from 'express-session';
 import errorHandler from 'errorhandler';
 import path from 'path';
 import { config } from './util/config';
-import './util/passport';
+import { syncSessionCookieToLoggedInCookie } from './util/passport';
 import mongoose from 'mongoose';
 import passport from 'passport';
+import onHeaders from 'on-headers';
 import cookieParser from 'cookie-parser';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
@@ -56,6 +57,17 @@ export async function appInit(): Promise<express.Express> {
   app.use(cookieParser()); // for parsing cookies
   app.use(express.json()); // for parsing application/json
   app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+  // Need to use the on-headers library to access the session cookie, because 
+  // express-session also uses this library to set the session cookie just 
+  // before sending the response. on-headers executes the listeners in reverse 
+  // order, so the syncSessionCookieToLoggedInCookie function's onHeaders 
+  // listener middleware has to come before the express-session middleware.
+  app.use(function(req, res, next) {
+    onHeaders(res, () => syncSessionCookieToLoggedInCookie(req, res, 
+      configData.sessionCookie, configData.loggedInCookie));
+    next();
+  });
 
   app.use(session({
     secret: configData.sessionSecret,

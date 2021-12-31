@@ -40,7 +40,6 @@
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
             Common.CommonUI.successMessage(infobox, this.responseText);
-            document.cookie = 'logged_in=true; path=/';
             Account.checkLogin();
           }
           else if (this.readyState == 4) {
