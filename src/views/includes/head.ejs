@@ -10,7 +10,7 @@
       defaultStylesheet.innerText = '#login_button, #signup_button, #logout_button { display: none; }';
       document.head.appendChild(defaultStylesheet);
 
-      const cookieName = 'logged_in';
+      const cookieName = '<%= config.loggedInCookie %>';
       if (document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)')?.pop() === 'true') {
         const stylesheet = document.createElement('style');
         stylesheet.type = 'text/css';
