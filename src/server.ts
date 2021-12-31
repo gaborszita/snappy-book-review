@@ -6,7 +6,7 @@ import  { appInit } from './app';
 
 (async() => {
   // start the app
-  const server = appInit().then(app => {
+  appInit().then(app => {
     app.listen(app.get('port'), () => {
       console.log('Listening on port ' + app.get('port'));
     })

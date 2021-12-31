@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, Express } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import errorHandler from 'errorhandler';
 import path from 'path';

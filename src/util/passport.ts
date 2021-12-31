@@ -35,7 +35,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 export function syncSessionCookieToLoggedInCookie(req: Request, res: Response, 
-  sessionCookieName: string, loggedInCookieName: string) {
+  sessionCookieName: string, loggedInCookieName: string): void {
   if (req.isAuthenticated()) {
     const responseCookies = setCookie.parse(res.get('Set-Cookie'), {});
     let found = false;

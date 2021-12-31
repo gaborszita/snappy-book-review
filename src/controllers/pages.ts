@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUser, User, AccountState } from '../models/User';
-import { body, check, validationResult } from 'express-validator';
+import { User, AccountState } from '../models/User';
+import { body, validationResult } from 'express-validator';
 import passport from 'passport';
 
 /**
@@ -27,7 +27,7 @@ export const logInSubmit = (req: Request, res: Response, next: NextFunction): vo
   /*passport.authenticate('local', { successRedirect: '/',
                                  failureRedirect: '/login',
                                  failureFlash: true });*/
-  passport.authenticate('local', (err: Error, user, info) => {
+  passport.authenticate('local', (err: Error, user) => {
     if (err) { return next(err); }
     if (!user) {
       return res.status(400).send('Invalid email/password');
@@ -91,7 +91,7 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
  * Log out submit page.
  * @route POST /account/log-out/submit
  */
-export const logOutSubmit = function(req: Request, res: Response) {
+export const logOutSubmit = function(req: Request, res: Response): void {
   req.logout();
   res.send("OK");
 }
