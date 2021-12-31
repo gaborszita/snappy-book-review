@@ -48,6 +48,8 @@ async function setup() {
     'protocol of your site (most likely http or https): ');
   const siteAddress = await ask('Please enter your site address (e.g. ' + 
     'localhost, localhost:3000, example.com): ');
+  const sessionMaxAge = await ask('Please enter the maximum session length ' + 
+    'in milliseconds (e.g. 60000 for 1 minutes): ');
 
   // session secret
   console.log('Generating session secret...');
@@ -60,7 +62,8 @@ async function setup() {
   const config = {
     sitePreferredProtocol: sitePreferredProtocol,
     siteAddress: siteAddress,
-    sessionSecret: sessionSecret
+    sessionSecret: sessionSecret,
+    sessionMaxAge: sessionMaxAge
   }
 
   // ask user to confirm if the script can write the config data to the 
