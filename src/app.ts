@@ -40,10 +40,7 @@ export async function appInit(): Promise<express.Express> {
   const app = express();
 
   // config
-  app.use(function (req, res, next) {
-    res.locals.config = configData;
-    next();
-  });
+  app.locals.config = configData;
 
   // redirect no trailing slash to trailing slash
   app.use(function (req, res, next) {
