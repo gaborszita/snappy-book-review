@@ -6,6 +6,7 @@ import { config } from './util/config';
 import './util/passport';
 import mongoose from 'mongoose';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
 
@@ -52,6 +53,7 @@ export async function appInit(): Promise<express.Express> {
     }
   });
 
+  app.use(cookieParser()); // for parsing cookies
   app.use(express.json()); // for parsing application/json
   app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
