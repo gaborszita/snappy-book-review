@@ -64,7 +64,7 @@ export async function appInit(): Promise<express.Express> {
     saveUninitialized: false,
     store: new MongoDBStore({
       uri: mongoUrl,
-      collection: "sessions"
+      collection: 'sessions'
     })
   }));
   app.use(passport.initialize());
