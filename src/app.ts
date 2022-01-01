@@ -11,8 +11,9 @@ import cookieParser from 'cookie-parser';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
 
-// controllers
-import * as pagesController from './controllers/pages';
+// routes
+import { router as mainPagesRouter } from './routes/main-pages';
+import { router as accountRouter } from './routes/account';
 
 export async function appInit(): Promise<express.Express> {
   const mongoUrl = process.env.MONGODB_URI;
@@ -92,13 +93,9 @@ export async function appInit(): Promise<express.Express> {
   // Serve static files
   app.use(express.static(path.join(__dirname, './public')));
 
-  // Primary app routes
-  app.get('/', pagesController.home);
-  app.get('/account/log-in/', pagesController.logIn);
-  app.post('/account/log-in/submit/', pagesController.logInSubmit);
-  app.get('/account/create-account/', pagesController.createAccount);
-  app.post('/account/create-account/submit/', pagesController.createAccountSubmit);
-  app.post('/account/log-out/submit/', pagesController.logOutSubmit);
+  // routes
+  app.use('/', mainPagesRouter);
+  app.use('/account/', accountRouter);
 
   // 404 error
   app.use(function (req, res) {

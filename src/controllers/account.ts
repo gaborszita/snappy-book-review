@@ -3,30 +3,13 @@ import { User, AccountState } from '../models/User';
 import { body, validationResult } from 'express-validator';
 import passport from 'passport';
 
-/**
- * Home page.
- * @route GET /
- */
-export const home = (req: Request, res: Response): void => {
-  res.render('home');
-};
-
-/**
- * Login page.
- * @route GET /account/log-in
- */
+// log in page
 export const logIn = (req: Request, res: Response): void => {
   res.render('account/log-in');
 };
 
-/**
- * Login submit page.
- * @route POST /account/log-in/submit
- */
+// log in submit
 export const logInSubmit = (req: Request, res: Response, next: NextFunction): void => {
-  /*passport.authenticate('local', { successRedirect: '/',
-                                 failureRedirect: '/login',
-                                 failureFlash: true });*/
   passport.authenticate('local', (err: Error, user) => {
     if (err) { return next(err); }
     if (!user) {
@@ -39,23 +22,17 @@ export const logInSubmit = (req: Request, res: Response, next: NextFunction): vo
   })(req, res, next);
 };
 
-/**
- * Create account page.
- * @route GET /account/sign-up
- */
+// create account page
 export const createAccount = (req: Request, res: Response): void => {
   res.render('account/create-account');
 };
 
-/**
- * Create account submit page.
- * @route POST /account/sign-up/submit
- */
+// create account submit
 export const createAccountSubmit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   await body('email').isEmail().normalizeEmail().run(req);
   await body('password').isLength({ min: 8, max: 20 })
-  .custom((value: string) => /\d/.test(value))
-  .custom((value: string) => /[a-zA-Z]/.test(value)).run(req);
+    .custom((value: string) => /\d/.test(value))
+    .custom((value: string) => /[a-zA-Z]/.test(value)).run(req);
 
   const errors = validationResult(req);
 
@@ -74,7 +51,7 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     passwordResetLink: 'none'
   });
 
-  User.findOne({ email: req.body.email }, function(err, existingUser) {
+  User.findOne({ email: req.body.email }, function (err, existingUser) {
     if (err) { return next(err) }
     if (existingUser) {
       res.status(400).send('An account with this email address already exists');
@@ -87,11 +64,8 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
   });
 }
 
-/**
- * Log out submit page.
- * @route POST /account/log-out/submit
- */
-export const logOutSubmit = function(req: Request, res: Response): void {
+// log out submit
+export const logOutSubmit = function (req: Request, res: Response): void {
   req.logout();
   res.send("OK");
 }
