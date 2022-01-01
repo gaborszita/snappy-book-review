@@ -37,7 +37,7 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    res.status(400).send("Invalid data");
+    res.status(400).send('Invalid data');
     return;
   }
 
@@ -67,5 +67,5 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
 // log out submit
 export const logOutSubmit = function (req: Request, res: Response): void {
   req.logout();
-  res.send("OK");
+  res.send('OK');
 }

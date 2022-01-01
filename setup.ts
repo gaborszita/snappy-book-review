@@ -153,7 +153,7 @@ async function setup() {
 
   console.log();
 
-  console.log("Setup complete!");
+  console.log('Setup complete!');
 }
 
 setup();

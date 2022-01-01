@@ -52,8 +52,8 @@ export function syncSessionCookieToLoggedInCookie(req: Request, res: Response,
       }
     }
     if (!found) {
-      console.error("WARNING: User appears to be logged in, but couldn't " + 
-        "get session cookie and couldn't set logged in cookie.");
+      console.error('WARNING: User appears to be logged in, but couldn\'t ' + 
+        'get session cookie and couldn\'t set logged in cookie.');
     }
   } else {
     if (req.cookies[loggedInCookieName]) {
