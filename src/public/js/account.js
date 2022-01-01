@@ -1,3 +1,3 @@
-import { Account } from '../../public_source/js/account.js';
+import { Account } from '../../public-source/js/account.js';
 
 Account.checkLogin();
