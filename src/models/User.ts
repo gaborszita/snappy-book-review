@@ -24,7 +24,7 @@ const UserSchema = new Schema<IUser>({
   password: { type: String, required: true },
   accountState: { 
     type: Number,
-    enum: Object.values(AccountState),
+    enum: Object.values(AccountState).filter(val => typeof val === 'number'),
     required: true
   },
   emailVerificationLink: { type: String, required: true },
