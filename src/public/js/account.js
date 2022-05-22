@@ -1,3 +1,1 @@
-import { Account } from '../../public-source/js/account.js';
-
-Account.checkLogin();
+export * from '../../public-source/js/account.js';
