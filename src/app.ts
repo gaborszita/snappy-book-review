@@ -14,6 +14,7 @@ const MongoDBStore = connectMongoDBSession(session);
 // routes
 import { router as mainPagesRouter } from './routes/main-pages';
 import { router as accountRouter } from './routes/account';
+import { router as booksRouter } from './routes/books';
 
 export async function appInit(): Promise<express.Express> {
   const mongoUrl = process.env.MONGODB_URI;
@@ -96,6 +97,7 @@ export async function appInit(): Promise<express.Express> {
   // routes
   app.use('/', mainPagesRouter);
   app.use('/account/', accountRouter);
+  app.use('/', booksRouter);
 
   // 404 error
   app.use(function (req, res) {
