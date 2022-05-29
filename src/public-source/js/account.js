@@ -16,4 +16,18 @@ export class Account {
       return false;
     }
   }
+
+  static addLogOutHandler(loggedInCookie, logOutUrl) {
+    document.getElementById('logout_button').addEventListener('click', 
+      function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          Common.Account.checkLogin(loggedInCookie);
+        }
+      };
+      xhttp.open('POST', logOutUrl, true);
+      xhttp.send();
+    });
+  }
 }
