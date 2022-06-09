@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include ('../../includes/head') %>
+    <title>Post review</title>
+  </head>
+  <body>
+    <%- include('../../includes/header') %>
+    <div class="sbr-maincontainer">
+      <h1>Leave a review for a book</h1>
+      <form class="sbr-form">
+        <div class="sbr-form-field">
+          <label for="isbn" class="form-label">Book ISBN</label>
+          <input class="form-control" id="isbn">
+        </div>
+        <div id="isbn_ajax_response_field"></div>
+        <script>
+          // isbn ajax script
+        </script>
+        <div class="sbr-form-field">
+          <label class="sbr-form-label">Rating</label>
+          <div class="sbr-rating-star sbr-rating-star-dynamic">
+            <input type="radio" name="rating" id="rating5">
+            <label for="rating5"></label>
+            <input type="radio" name="rating" id="rating4">
+            <label for="rating4"></label>
+            <input type="radio" name="rating" id="rating3">
+            <label for="rating3"></label>
+            <input type="radio" name="rating" id="rating2">
+            <label for="rating2"></label>
+            <input type="radio" name="rating" id="rating1">
+            <label for="rating1"></label>
+          </div>
+        </div>
+        <div class="sbr-form-field">
+          <label for="commentTextArea">Comment</label>
+          <textarea class="form-control" id="commentTextArea" rows="3"></textarea>
+        </div>
+        <button type="submit" class="sbr-form-submit-btn">Submit review</button>
+      </form>
+      <div id="form_submit_info"></div>
+      <script>
+        // form submit script
+      </script>
+    </div>
+    <%- include('../../includes/footer') %>
+  </body>
+</html>

@@ -1,3 +1,10 @@
+// font awesome
+@use "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@use "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
+
+
+// bootstrap
+
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 @import "../../../node_modules/bootstrap/scss/functions";
 
@@ -170,6 +177,39 @@
 
 .sbr-signup-form-last-name {
   padding-left: .5rem;
+}
+
+// star rating
+.sbr-rating-star {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.sbr-rating-star > input {
+  display: none;
+}
+.sbr-rating-star > label:before {
+  font-size: 30px;
+  text-shadow: 1px 1px 0;
+  cursor: pointer;
+}
+.sbr-rating-star > label {
+  @extend .fa;
+  @extend .fa-star;
+  color: #838383;
+}
+.sbr-rating-star > input:checked ~ label{
+  color: #ffe400;
+}
+.sbr-rating-star-dynamic label:active {
+  transform: scale(0.8);
+  transition: 0.3s ease;
+}
+
+.sbr-rating-number {
+  margin: 3px;
+  font-size: 1rem;
 }
 
 // other minor stuff

@@ -18,5 +18,5 @@ export const book = (req: Request, res: Response, next: NextFunction): void => {
 };
 
 export const postReview = (req: Request, res: Response): void => {
-  res.send('Post review page');
+  res.render('books/post-review');
 };
