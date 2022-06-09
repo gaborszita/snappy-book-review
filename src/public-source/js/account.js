@@ -23,7 +23,7 @@ export class Account {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          Common.Account.checkLogin(loggedInCookie);
+          Account.checkLogin(loggedInCookie);
         }
       };
       xhttp.open('POST', logOutUrl, true);

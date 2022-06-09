@@ -26,7 +26,7 @@ module.exports = [
       filename: 'account.js',
       path: outputPath,
       library: {
-        name: 'AccountInit',
+        name: 'Account',
         type: 'umd'
       }
     },
