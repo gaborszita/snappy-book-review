@@ -8,15 +8,12 @@
     <%- include('../../includes/header') %>
     <div class="sbr-maincontainer">
       <h1>Leave a review for a book</h1>
-      <form class="sbr-form">
+      <form class="sbr-form" id="review_form">
         <div class="sbr-form-field">
           <label for="isbn" class="form-label">Book ISBN</label>
           <input class="form-control" id="isbn">
         </div>
-        <div id="isbn_ajax_response_field"></div>
-        <script>
-          // isbn ajax script
-        </script>
+        <div id="isbn_validator_response_field"></div>
         <div class="sbr-form-field">
           <label class="sbr-form-label">Rating</label>
           <div class="sbr-rating-star sbr-rating-star-dynamic">
@@ -39,10 +36,94 @@
         <button type="submit" class="sbr-form-submit-btn">Submit review</button>
       </form>
       <div id="form_submit_info"></div>
-      <script>
-        // form submit script
-      </script>
     </div>
     <%- include('../../includes/footer') %>
+    <script>
+      let isbnValid = false;
+      function isbnValidator(infobox) {
+        Common.CommonUI.loadingIcon(infobox);
+        isbnValid = false;
+        const isbn = document.getElementById('isbn').value.trim().replace(/-/g, '');
+        if (isbn==='') {
+          Common.CommonUI.errorMessage(infobox, 'Please enter ISBN.');
+          return;
+        }
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            const data = JSON.parse(this.responseText);
+            if (data.found) {
+              Common.CommonUI.successMessage(infobox, 'Book found!<br>' + data.title);
+              isbnValid = true;
+            } else {
+              Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
+            }
+          }
+          else if (this.readyState == 4) {
+            Common.CommonUI.errorMessage(infobox, 'Unknown error');
+          }
+        }
+        xhttp.open('GET', '<%= config.siteUrl %>/books/isbn-validator/?isbn=' + isbn);
+        xhttp.send();
+      }
+      function formSubmit(infobox) {
+        const isbn = document.getElementById('isbn').value.trim().replace(/-/g, '');
+        if (!isbnValid) {
+          Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
+          return;
+        }
+        
+        let checkedStar;
+        if (document.getElementById('rating1').checked) {
+          checkedStar = 1;
+        } else if (document.getElementById('rating2').checked) {
+          checkedStar = 2;
+        } else if (document.getElementById('rating3').checked) {
+          checkedStar = 3;
+        } else if (document.getElementById('rating4').checked) {
+          checkedStar = 4;
+        } else if (document.getElementById('rating5').checked) {
+          checkedStar = 5;
+        } else {
+          Common.CommonUI.errorMessage(infobox, 'Please select a rating.');
+          return;
+        }
+
+        let comment = document.getElementById('commentTextArea').value;
+        if (comment === '') {
+          comment = null;
+        }
+        Common.CommonUI.loadingIcon(infobox);
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            Common.CommonUI.successMessage(infobox, this.responseText);
+          } else if (this.readyState == 4) {
+            Common.CommonUI.errorMessage(infobox, this.responseText);
+          }
+        };
+
+        xhttp.open('POST', '<%= config.siteUrl %>/books/post-review/submit/', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        const data = {
+          isbn: isbn,
+          rating: checkedStar,
+          comment: comment
+        };
+        xhttp.send(JSON.stringify(data));
+      }
+    </script>
+    <script>
+      document.getElementById('isbn').addEventListener('keyup', function() {
+        isbnValidator(document.getElementById('isbn_validator_response_field'));
+      });
+    </script>
+    <script>
+      document.getElementById('review_form').addEventListener('submit', function() {
+        event.preventDefault();
+        formSubmit(document.getElementById('form_submit_info'));
+      });
+    </script>
   </body>
 </html>
