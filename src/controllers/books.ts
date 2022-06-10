@@ -50,8 +50,8 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
     Rating.find({ isbn: isbn }, 'rating', function(err, ratings) {
       if (err) { return next(err) }
       let totalRating = 0;
-      for (const book of ratings) {
-        totalRating += book.rating;
+      for (const rating of ratings) {
+        totalRating += rating.rating;
       }
       totalRating /= ratings.length;
       Book.findOneAndUpdate({ isbn: isbn }, { rating: totalRating }, function(err) {
