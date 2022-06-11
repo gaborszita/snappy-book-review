@@ -4,8 +4,27 @@ import https from 'https';
 import { Rating } from '../models/Rating';
 import { IUser } from '../models/User';
 
-export const search = (req: Request, res: Response): void => {
-  res.send('Search page');
+export const search = (req: Request, res: Response, next: NextFunction): void => {
+  const query = req.query.q as string;
+  if (query==null || query==='') {
+    res.status(400).send('Bad request');
+    return;
+  }
+  const words = query.trim().split(/\s+/);
+  const regexps = [];
+  for (const word of words) {
+    const re = new RegExp(`\\b${word}\\b`, 'i');
+    regexps.push(re);
+  }
+  const filter = { $or: [ {author: { $in: regexps }}, {title: { $in: regexps }} ] };
+  Book.find(filter, 'author title isbn', { limit: 10 }, function(err, books) {
+    if (err) { return next(err) }
+    const results = [];
+    for (const book of books) {
+      results.push({ isbn: book.isbn, fullTitle: book.author + ': ' + book.title });
+    }
+    res.render('search', { query: query, results: results });
+  });
 };
 
 export const book = (req: Request, res: Response, next: NextFunction): void => {
