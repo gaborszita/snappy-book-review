@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include ('../../includes/head') %>
+    <title>Book - <%= title %></title>
+  </head>
+  <body>
+    <%- include('../../includes/header') %>
+    <div class="sbr-maincontainer">
+      <h1><%= title %></h1>
+      <table>
+        <tr>
+          <td>
+            <div class="sbr-rating-star">
+              <% for (let i=5; i>=1; i--) { %>
+                <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(rating)===i) { %> checked<% } %>>
+                <label for="rating<%= i %>"></label>
+              <% } %>
+            </div>
+          </td>
+          <td>
+            <p class="sbr-rating-number"><%= rating %></p>
+          </td>
+        </tr>
+      </table>
+      <h4>Reviews:</h4>
+      <% for (k in ratings) { %>
+        <span class="sbr-review-comment-name"><%= ratings[k].name %></span>
+        <div class="sbr-rating-star">
+          <% for (let i=5; i>=1; i--) { %>
+            <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(ratings[k].rating)===i) { %> checked<% } %>>
+            <label for="rating<%= i %>"></label>
+          <% } %>
+        </div>
+        <p><%= ratings[k].comment %></p>
+        <% if (k+1<ratings.length) { %><hr><% } %>
+      <% } %>
+    </div>
+    <%- include('../../includes/footer') %>
+  </body>
+</html>

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Book } from '../models/Book';
 import https from 'https';
 import { Rating } from '../models/Rating';
-import { IUser } from '../models/User';
+import { IUser, User } from '../models/User';
 
 export const search = (req: Request, res: Response, next: NextFunction): void => {
   const query = req.query.q as string;
@@ -27,11 +27,34 @@ export const search = (req: Request, res: Response, next: NextFunction): void =>
   });
 };
 
-export const book = (req: Request, res: Response, next: NextFunction): void => {
-  Book.findOne({ isbn: req.params.bookISBN }, function(err, book) {
+export const book = (req: Request, res: Response, next: NextFunction) => {
+  const isbn = req.params.bookISBN;
+  Book.findOne({ isbn: isbn }, function(err, book) {
     if (err) { return next(err) }
     if (book) {
-      res.send('Book exists')
+      const bookRating = book.rating;
+      const bookFullTitle = book.author + ': ' + book.title;
+      Rating.find({ isbn: isbn }, 'rating comment user', function(err, ratings) {
+        if (err) { return next(err) }
+        const userWaits = [];
+        for (const rating of ratings) {
+          userWaits.push(User.findById(rating.user.toString()), 'firstName lastName fullName');
+        }
+        Promise.all(userWaits).then((users) => {
+          const ratingsResponse = [];
+          for (const i in ratings) {
+            if (users[i] == null) {
+              return next(new Error('User null when getting user name of rating'));
+            }
+            ratingsResponse.push({ name: users[i].fullName, 
+              rating: ratings[i].rating, comment: ratings[i].comment });
+          }
+          console.log(ratingsResponse);
+          res.render('book/book', { title: bookFullTitle, rating: bookRating, ratings: ratingsResponse });
+        }).catch((err) => {
+          next(err);
+        });
+      });
     } else {
       // 404 error, book doesn't exist
       next();
@@ -136,7 +159,7 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
 
 export const isbnValidator = (req: Request, res: Response, next: NextFunction): void => {
   const isbn = req.query.isbn;
-  if (isbn==='' || isNaN(Number(isbn))) {
+  if (isbn==null || isbn==='' || isNaN(Number(isbn))) {
     res.status(400).send('Malformed request');
     return;
   }
