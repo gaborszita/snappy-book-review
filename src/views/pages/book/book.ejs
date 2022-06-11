@@ -24,16 +24,16 @@
         </tr>
       </table>
       <h4>Reviews:</h4>
-      <% for (k in ratings) { %>
-        <span class="sbr-review-comment-name"><%= ratings[k].name %></span>
+      <% for (k in reviews) { %>
+        <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
         <div class="sbr-rating-star">
           <% for (let i=5; i>=1; i--) { %>
-            <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(ratings[k].rating)===i) { %> checked<% } %>>
+            <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
             <label for="rating<%= i %>"></label>
           <% } %>
         </div>
-        <p><%= ratings[k].comment %></p>
-        <% if (k+1<ratings.length) { %><hr><% } %>
+        <p><%= reviews[k].comment %></p>
+        <% if (k+1<reviews.length) { %><hr><% } %>
       <% } %>
     </div>
     <%- include('../../includes/footer') %>

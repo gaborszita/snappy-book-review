@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Book } from '../models/Book';
 import https from 'https';
-import { Rating } from '../models/Rating';
+import { Review } from '../models/Review';
 import { IUser, User } from '../models/User';
 
 export const search = (req: Request, res: Response, next: NextFunction): void => {
@@ -34,23 +34,23 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
     if (book) {
       const bookRating = book.rating;
       const bookFullTitle = book.author + ': ' + book.title;
-      Rating.find({ isbn: isbn }, 'rating comment user', function(err, ratings) {
+      Review.find({ isbn: isbn }, 'rating comment user', function(err, reviews) {
         if (err) { return next(err) }
         const userWaits = [];
-        for (const rating of ratings) {
-          userWaits.push(User.findById(rating.user.toString()), 'firstName lastName fullName');
+        for (const review of reviews) {
+          userWaits.push(User.findById(review.user.toString()), 'firstName lastName fullName');
         }
         Promise.all(userWaits).then((users) => {
-          const ratingsResponse = [];
-          for (const i in ratings) {
+          const reviewsResponse = [];
+          for (const i in reviews) {
             if (users[i] == null) {
               return next(new Error('User null when getting user name of rating'));
             }
-            ratingsResponse.push({ name: users[i].fullName, 
-              rating: ratings[i].rating, comment: ratings[i].comment });
+            reviewsResponse.push({ name: users[i].fullName, 
+              rating: reviews[i].rating, comment: reviews[i].comment });
           }
-          console.log(ratingsResponse);
-          res.render('book/book', { title: bookFullTitle, rating: bookRating, ratings: ratingsResponse });
+          console.log(reviewsResponse);
+          res.render('book/book', { title: bookFullTitle, rating: bookRating, reviews: reviewsResponse });
         }).catch((err) => {
           next(err);
         });
@@ -89,13 +89,13 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
   const user = req.user as IUser;
 
   const updateBookRating = (callback) => {
-    Rating.find({ isbn: isbn }, 'rating', function(err, ratings) {
+    Review.find({ isbn: isbn }, 'rating', function(err, reviews) {
       if (err) { return next(err) }
       let totalRating = 0;
-      for (const rating of ratings) {
-        totalRating += rating.rating;
+      for (const review of reviews) {
+        totalRating += review.rating;
       }
-      totalRating /= ratings.length;
+      totalRating /= reviews.length;
       Book.findOneAndUpdate({ isbn: isbn }, { rating: totalRating }, function(err) {
         if (err) { return next(err) }
         callback();
@@ -103,27 +103,27 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
     });
   }
 
-  const createRating = () => {
-    const ratingObj = new Rating({
+  const createReview = () => {
+    const ratingObj = new Review({
       user: user._id,
       rating: rating,
       comment: comment
     });
   
-    Rating.findOne({ user: user._id }, '', function(err, existingRating) {
+    Review.findOne({ user: user._id }, '', function(err, existingReview) {
       if (err) { return next(err) }
-      if (existingRating) {
-        existingRating.rating = rating;
-        existingRating.comment = comment;
-        existingRating.save((err) => {
+      if (existingReview) {
+        existingReview.rating = rating;
+        existingReview.comment = comment;
+        existingReview.save((err) => {
           if (err) { return next(err); }
-          updateBookRating(() => res.send('Rating updated'));
+          updateBookRating(() => res.send('Review updated'));
         });
         return;
       }
       ratingObj.save((err) => {
         if (err) { return next(err); }
-        updateBookRating(() => res.send('Rating saved'));
+        updateBookRating(() => res.send('Review saved'));
       })
     });
   }
@@ -147,12 +147,12 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
 
           book.save((err) => {
             if (err) { return next(err); }
-            createRating();
+            createReview();
           });
         });
         return;
       }
-      createRating();
+      createReview();
     });
   });
 }
