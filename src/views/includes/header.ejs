@@ -12,8 +12,8 @@
           <a href="<%= config.siteUrl %>/">Home</a>
         </li>
       </ul>
-      <form class="sbr-navbar-search sbr-navbar-space-right" action="<%= config.siteUrl %>/search" method="get">
-        <input name="q" type="search" placeholder="Search for a book">
+      <form class="sbr-navbar-search sbr-navbar-space-right" id="search_form" action="<%= config.siteUrl %>/search" method="get">
+        <input name="q" id="search_input" type="search" placeholder="Search for a book">
         <button type="submit">Search</button>
       </form>
       <ul>

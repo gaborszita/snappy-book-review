@@ -8,14 +8,21 @@
     <%- include('../includes/header') %>
     <div class="sbr-maincontainer sbr-middlealign">
       <h1 class="sbr-text-center">Snappy Book Review - The best website for reading book reviews</h1>
-      <form class="sbr-form sbr-text-center" action="<%= config.siteUrl %>/search/" method="get">
+      <form class="sbr-form sbr-text-center" id="home_search_form" action="<%= config.siteUrl %>/search/" method="get" >
         <div class="sbr-form-field">
-          <input name="q" class="sbr-form-control" type="search" placeholder="Search for a book">
+          <input name="q" class="sbr-form-control" type="search" placeholder="Search for a book" id="home_search_input">
         </div>
         <button type="submit" class="sbr-form-submit-btn">Search</button>
       </form>
       <p><a href="<%- config.siteUrl %>/books/post-review/">Leave a review for a book</a></p>
     </div>
     <%- include('../includes/footer') %>
+    <script>
+      document.getElementById('home_search_form').addEventListener('submit', function(event) {
+        if (document.getElementById('home_search_input').value === '') {
+          event.preventDefault();
+        }
+      });
+    </script>
   </body>
 </html>
