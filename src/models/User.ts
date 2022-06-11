@@ -10,6 +10,7 @@ export enum AccountState {
 export interface IUser extends Document {
   firstName: string,
   lastName: string,
+  fullName: string,
   email: string,
   password: string,
   accountState: AccountState,
@@ -29,6 +30,11 @@ const UserSchema = new Schema<IUser>({
   },
   emailVerificationLink: { type: String, required: true },
   passwordResetLink: { type: String, required: true }
+});
+
+// full name virtual
+UserSchema.virtual("fullName").get(function() {
+  return this.firstName + ' ' + this.lastName;
 });
 
 // hash password
