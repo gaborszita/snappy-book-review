@@ -61,7 +61,7 @@
         </div>
         <% if (reviews.length>0) { %><hr id="user_review_hr"><% } %>
       <% } %>
-      <% for (k in reviews) { %>
+      <% for (let k=0; k<reviews.length; k++) { %>
         <div>
           <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
           <div class="sbr-rating-star">
@@ -72,7 +72,7 @@
           </div>
           <% if (reviews[k].comment!=null) { %><p><%- reviews[k].comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
         </div>
-        <% if (Number(k)+1<reviews.length) { console.log('rating: ' + reviews[k].rating) %><hr><% } %>
+        <% if (k+1<reviews.length) { console.log('rating: ' + reviews[k].rating) %><hr><% } %>
       <% } %>
     </div>
     <%- include('../../includes/footer') %>

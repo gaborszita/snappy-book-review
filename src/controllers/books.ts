@@ -51,7 +51,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
             currentUser = req.user as IUser;
           }
           let userReview = null;
-          for (const i in reviews) {
+          for (let i=0; i<reviews.length; i++) {
             if (users[i] == null) {
               return next(new Error('User null when getting user name of rating'));
             }
