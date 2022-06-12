@@ -63,7 +63,6 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
               reviewsResponse.push(review);
             }
           }
-          console.log(reviewsResponse);
           const responseData = {
             title: bookFullTitle,
             isbn: isbn,
