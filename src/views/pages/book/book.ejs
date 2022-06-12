@@ -62,6 +62,7 @@
         </div>
       <% } %>
       <% for (k in reviews) { %>
+        <div>
         <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
         <div class="sbr-rating-star">
           <% for (let i=5; i>=1; i--) { %>
@@ -71,6 +72,7 @@
         </div>
         <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
         <% if (k+1<reviews.length) { %><hr><% } %>
+        </div>
       <% } %>
     </div>
     <%- include('../../includes/footer') %>
