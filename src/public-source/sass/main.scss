@@ -227,6 +227,11 @@
   font-size: 90%;
 }
 
+.sbr-review-comment-name-user {
+  @extend .sbr-review-comment-name;
+  font-weight: bold;
+}
+
 .sbr-leave-review-box {
   @extend .border;
   @extend .border-primary;

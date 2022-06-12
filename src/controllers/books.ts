@@ -42,15 +42,29 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
         }
         Promise.all(userWaits).then((users) => {
           const reviewsResponse = [];
+          const currentUser = req.user as IUser;
+          let userReview = null;
           for (const i in reviews) {
             if (users[i] == null) {
               return next(new Error('User null when getting user name of rating'));
             }
-            reviewsResponse.push({ name: users[i].fullName, 
-              rating: reviews[i].rating, comment: reviews[i].comment });
+            const review = { name: users[i].fullName, 
+              rating: reviews[i].rating, comment: reviews[i].comment }
+            if (users[i].id === currentUser.id) {
+              userReview = review;
+            } else {
+              reviewsResponse.push(review);
+            }
           }
           console.log(reviewsResponse);
-          res.render('book/book', { title: bookFullTitle, isbn: isbn, rating: bookRating, reviews: reviewsResponse });
+          const responseData = {
+            title: bookFullTitle,
+            isbn: isbn,
+            rating: bookRating,
+            userReview: userReview,
+            reviews: reviewsResponse
+          }
+          res.render('book/book', responseData);
         }).catch((err) => {
           next(err);
         });

@@ -46,6 +46,17 @@
       </div>
       <p></p>
       <h4>Reviews:</h4>
+      <% if (userReview != null) { %>
+        <span class="sbr-review-comment-name-user">Your review</span>
+        <div class="sbr-rating-star">
+          <% for (let i=5; i>=1; i--) { %>
+            <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
+            <label for="user_review_rating_<%= i %>"></label>
+          <% } %>
+        </div>
+        <% if (userReview.comment!=null) { %><p><%= userReview.comment %></p><% } %>
+        <% if (reviews.length>0) { %><hr><% } %>
+      <% } %>
       <% for (k in reviews) { %>
         <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
         <div class="sbr-rating-star">
