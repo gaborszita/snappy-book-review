@@ -36,7 +36,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
   Book.findOne({ isbn: isbn }, function(err, book) {
     if (err) { return next(err) }
     if (book) {
-      const bookRating = book.rating;
+      const bookRating = book.rating.toFixed(1);
       const bookFullTitle = book.author + ': ' + book.title;
       Review.find({ isbn: isbn }, 'rating comment user', function(err, reviews) {
         if (err) { return next(err) }
