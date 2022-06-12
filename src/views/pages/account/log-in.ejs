@@ -57,7 +57,7 @@
     </script>
     <script>
       document.getElementById('login_form').addEventListener('submit',
-        function () {
+        function (event) {
           event.preventDefault();
           formSubmit(document.getElementById('form_submit_info'));
         });

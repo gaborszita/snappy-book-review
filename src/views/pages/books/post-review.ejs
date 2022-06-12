@@ -33,6 +33,11 @@
     </div>
     <%- include('../../includes/footer') %>
     <script>
+      if (!Account.Account.checkLogin('<%= config.loggedInCookie %>')) {
+        window.location.href = '<%= config.siteUrl %>/account/log-in/';
+      }
+    </script>
+    <script>
       let isbnValid = false;
       function isbnValidator(infobox) {
         Common.CommonUI.loadingIcon(infobox);
@@ -117,7 +122,7 @@
       });
     </script>
     <script>
-      document.getElementById('review_form').addEventListener('submit', function() {
+      document.getElementById('review_form').addEventListener('submit', function(event) {
         event.preventDefault();
         formSubmit(document.getElementById('form_submit_info'));
       });

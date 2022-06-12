@@ -113,7 +113,7 @@
     </script>
     <script>
       document.getElementById('signupform').addEventListener('submit',
-        function () {
+        function (event) {
           event.preventDefault();
           formSubmit(document.getElementById('form_submit_info'));
         });
