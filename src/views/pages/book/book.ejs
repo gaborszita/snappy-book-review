@@ -56,10 +56,10 @@
               <label for="user_review_rating_<%= i %>"></label>
             <% } %>
           </div>
-          <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
-          <% if (reviews.length>0) { %><hr><% } %>
+          <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>          
           <div id="review_delete_error_info"></div>
         </div>
+        <% if (reviews.length>0) { %><hr><% } %>
       <% } %>
       <% for (k in reviews) { %>
         <div>
@@ -71,8 +71,8 @@
             <% } %>
           </div>
           <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
-          <% if (k+1<reviews.length) { %><hr><% } %>
         </div>
+        <% if (Number(k)+1<reviews.length) { console.log('rating: ' + reviews[k].rating) %><hr><% } %>
       <% } %>
     </div>
     <%- include('../../includes/footer') %>
