@@ -13,8 +13,8 @@
           <td>
             <div class="sbr-rating-star">
               <% for (let i=5; i>=1; i--) { %>
-                <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(rating)===i) { %> checked<% } %>>
-                <label for="rating<%= i %>"></label>
+                <input type="radio" id="book_rating_<%= i %>" disabled<% if (Math.round(rating)===i) { %> checked<% } %>>
+                <label for="book_rating_<%= i %>"></label>
               <% } %>
             </div>
           </td>
@@ -23,6 +23,7 @@
           </td>
         </tr>
       </table>
+      <p></p>
       <button type="button" class="sbr-leave-review-collapse-button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
       <div class="sbr-leave-review-box collapse" id="review_form_container">
         <form class="sbr-form" id="review_form">
@@ -30,8 +31,8 @@
             <label class="sbr-form-label">Rating</label>
             <div class="sbr-rating-star sbr-rating-star-dynamic">
               <% for (let i=5; i>=1; i--) { %>
-                <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(rating)===i) { %> checked<% } %>>
-                <label for="rating<%= i %>"></label>
+                <input type="radio" name="rating" id="form_rating_<%= i %>">
+                <label for="form_rating_<%= i %>"></label>
               <% } %>
             </div>
           </div>
@@ -43,13 +44,14 @@
         </form>
         <div id="form_submit_info"></div>
       </div>
+      <p></p>
       <h4>Reviews:</h4>
       <% for (k in reviews) { %>
         <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
         <div class="sbr-rating-star">
           <% for (let i=5; i>=1; i--) { %>
-            <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
-            <label for="rating<%= i %>"></label>
+            <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
+            <label for="review_<%= k %>_rating_<%= i %>"></label>
           <% } %>
         </div>
         <p><%= reviews[k].comment %></p>
