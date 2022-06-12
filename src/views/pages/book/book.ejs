@@ -120,13 +120,26 @@
         };
         xhttp.send(JSON.stringify(data));
       }
-      function deleteReview(ratingBox) {
+      function deleteReview(ratingBox, errorInfoBox) {
         ratingBox.classList.add('sbr-review-comment-user-deleting');
-        setTimeout(() => {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
           new Common.Collapse(ratingBox, {
             hide: true
           });
-        }, '1000');
+          } else if (this.readyState == 4) {
+            ratingBox.classList.remove('sbr-review-comment-user-deleting');
+            Common.CommonUI.errorMessage(errorInfoBox, this.responseText);
+          }
+        };
+
+        xhttp.open('POST', '<%= config.siteUrl %>/books/delete-review/submit/', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        const data = {
+          isbn: '<%= isbn %>'
+        };
+        xhttp.send(JSON.stringify(data));
       }
     </script>
     <script>

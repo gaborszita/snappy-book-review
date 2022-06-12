@@ -8,3 +8,4 @@ router.get('/book/:bookISBN', books.book);
 router.get('/books/post-review', books.postReview);
 router.post('/books/post-review/submit', books.postReviewSubmit);
 router.get('/books/isbn-validator', books.isbnValidator);
+router.post('/books/delete-review/submit', books.deleteReviewSubmit);

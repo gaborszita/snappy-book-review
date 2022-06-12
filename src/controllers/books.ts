@@ -107,21 +107,6 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
 
   const user = req.user as IUser;
 
-  const updateBookRating = (callback) => {
-    Review.find({ isbn: isbn }, 'rating', function(err, reviews) {
-      if (err) { return next(err) }
-      let totalRating = 0;
-      for (const review of reviews) {
-        totalRating += review.rating;
-      }
-      totalRating /= reviews.length;
-      Book.findOneAndUpdate({ isbn: isbn }, { rating: totalRating }, function(err) {
-        if (err) { return next(err) }
-        callback();
-      });
-    });
-  }
-
   const createReview = () => {
     const review = new Review({
       user: user._id,
@@ -137,13 +122,19 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
         existingReview.comment = comment;
         existingReview.save((err) => {
           if (err) { return next(err); }
-          updateBookRating(() => res.send('Review updated'));
+          updateBookRating(isbn, (err) => {
+            if (err) { return next(err); }
+            res.send('Review updated');
+          });
         });
         return;
       }
       review.save((err) => {
         if (err) { return next(err); }
-        updateBookRating(() => res.send('Review saved'));
+        updateBookRating(isbn, () => {
+          if (err) { return next(err); }
+          res.send('Review saved');
+        });
       })
     });
   }
@@ -174,6 +165,31 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
       }
       createReview();
     });
+  });
+}
+
+export const deleteReviewSubmit = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.isAuthenticated()) {
+    res.status(400).send('Not logged in');
+    return;
+  }
+  const user = req.user as IUser;
+  const isbn = req.body.isbn;
+
+  if (typeof isbn !== 'string' || !/^\d+$/.test(isbn)) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+  Review.findOneAndDelete({isbn: isbn, user: user._id}, function(err, deletedReview) {
+    if (err) { return next(err) }
+    if (deletedReview===null) {
+      res.status(400).send('User doesn\'t have review on book with this isbn');
+    } else {
+      updateBookRating(isbn, (err) => {
+        if (err) { return next(err) }
+        res.send('OK');
+      });
+    }
   });
 }
 
@@ -245,6 +261,23 @@ function checkIsbnAuthorTitle(isbn, callback) {
       } else {
         callback(null);
       }
+    });
+  });
+}
+
+function updateBookRating(isbn, callback) {
+  Review.find({ isbn: isbn }, 'rating', function(err, reviews) {
+    if (err) { return callback(err) }
+    let totalRating = 0;
+    for (const review of reviews) {
+      totalRating += review.rating;
+    }
+    if (reviews.length > 0) {
+      totalRating /= reviews.length;
+    }
+    Book.findOneAndUpdate({ isbn: isbn }, { rating: totalRating }, function(err) {
+      if (err) { return callback(err) }
+      callback();
     });
   });
 }
