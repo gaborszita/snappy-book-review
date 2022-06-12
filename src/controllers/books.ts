@@ -123,14 +123,14 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
   }
 
   const createReview = () => {
-    const ratingObj = new Review({
+    const review = new Review({
       user: user._id,
       isbn: isbn,
       rating: rating,
       comment: comment
     });
   
-    Review.findOne({ user: user._id }, '', function(err, existingReview) {
+    Review.findOne({ isbn: isbn, user: user._id }, '', function(err, existingReview) {
       if (err) { return next(err) }
       if (existingReview) {
         existingReview.rating = rating;
@@ -141,7 +141,7 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
         });
         return;
       }
-      ratingObj.save((err) => {
+      review.save((err) => {
         if (err) { return next(err); }
         updateBookRating(() => res.send('Review saved'));
       })
