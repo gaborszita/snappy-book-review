@@ -3,13 +3,16 @@ import { Book } from '../models/Book';
 import https from 'https';
 import { Review } from '../models/Review';
 import { IUser, User } from '../models/User';
+import { check, validationResult } from 'express-validator';
 
-export const search = (req: Request, res: Response, next: NextFunction): void => {
-  const query = req.query.q as string;
-  if (query==null || query==='') {
-    res.status(400).send('Bad request');
+export const search = async (req: Request, res: Response, next: NextFunction) => {
+  await check('q').isString().notEmpty().run(req);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
     return;
   }
+  const query = req.query.q as string;
   const words = query.trim().split(/\s+/);
   const regexps = [];
   for (const word of words) {
@@ -84,29 +87,33 @@ export const postReview = (req: Request, res: Response): void => {
   res.render('books/post-review');
 };
 
-export const postReviewSubmit = (req: Request, res: Response, next: NextFunction): void => {
-  const isbn = req.body.isbn;
-  const rating = req.body.rating;
-  let comment = req.body.comment;
-
+export const postReviewSubmit = async(req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
     res.status(400).send('Not logged in');
     return;
   }
 
-  if (typeof isbn !== 'string' || 
-    (comment!==null && typeof comment !== 'string') || typeof rating !== 'number') {
+  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+  await check('rating').isInt({ min: 1, max: 5 }).run(req);
+  await check('comment').custom(value => {
+    if (value != null && typeof value !== 'string') {
+      return Promise.reject('Comment invalid');
+    }
+    return true;
+  }).run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     res.status(400).send('Invalid data');
     return;
   }
+  
+  const isbn = req.body.isbn;
+  const rating = req.body.rating;
+  let comment = req.body.comment;
 
   if (comment==='') {
     comment = null;
-  }
-
-  if (rating<1 || rating>5) {
-    res.status(400).send('Invalid data');
-    return;
   }
 
   const user = req.user as IUser;
@@ -172,18 +179,23 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
   });
 }
 
-export const deleteReviewSubmit = (req: Request, res: Response, next: NextFunction): void => {
+export const deleteReviewSubmit = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
     res.status(400).send('Not logged in');
     return;
   }
-  const user = req.user as IUser;
-  const isbn = req.body.isbn;
 
-  if (typeof isbn !== 'string' || !/^\d+$/.test(isbn)) {
+  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     res.status(400).send('Invalid data');
     return;
   }
+
+  const user = req.user as IUser;
+  const isbn = req.body.isbn;
+
   Review.findOneAndDelete({isbn: isbn, user: user._id}, function(err, deletedReview) {
     if (err) { return next(err) }
     if (deletedReview===null) {
@@ -197,12 +209,16 @@ export const deleteReviewSubmit = (req: Request, res: Response, next: NextFuncti
   });
 }
 
-export const isbnValidator = (req: Request, res: Response, next: NextFunction): void => {
-  const isbn = req.query.isbn;
-  if (typeof isbn !== 'string' || !/^\d+$/.test(isbn)) {
+export const isbnValidator = async (req: Request, res: Response, next: NextFunction) => {
+  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     res.status(400).send('Invalid data');
     return;
   }
+
+  const isbn = req.query.isbn;
 
   try {
     checkIsbn(isbn, (title) => {
