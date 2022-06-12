@@ -38,7 +38,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
         if (err) { return next(err) }
         const userWaits = [];
         for (const review of reviews) {
-          userWaits.push(User.findById(review.user.toString()), 'firstName lastName fullName');
+          userWaits.push(User.findById(review.user.toString(), 'firstName lastName fullName'));
         }
         Promise.all(userWaits).then((users) => {
           const reviewsResponse = [];
