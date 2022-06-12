@@ -13,7 +13,8 @@ export const search = (req: Request, res: Response, next: NextFunction): void =>
   const words = query.trim().split(/\s+/);
   const regexps = [];
   for (const word of words) {
-    const re = new RegExp(`\\b${word}\\b`, 'i');
+    const escapedWord = word.replace(/(\[|\]|\(|\)|\{|\}|\*|\+|\?|\||\^|\$|\.|\\)/g, '\\$&');
+    const re = new RegExp(`( ${escapedWord} |^${escapedWord}|${escapedWord}$)`, 'i');
     regexps.push(re);
   }
   const filter = { $or: [ {author: { $in: regexps }}, {title: { $in: regexps }} ] };
