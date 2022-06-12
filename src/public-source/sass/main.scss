@@ -25,9 +25,18 @@
 @import "../../../node_modules/bootstrap/scss/buttons";
 @import "../../../node_modules/bootstrap/scss/alert";
 @import "../../../node_modules/bootstrap/scss/spinners";
+@import "../../../node_modules/bootstrap/scss/utilities";
+@import "../../../node_modules/bootstrap/scss/utilities/api";
 
 
 // 6. Add additional custom code here
+
+// main button
+
+@mixin main-button {
+  @extend .btn;
+  @extend .btn-primary;
+}
 
 // navigation bar
 
@@ -133,8 +142,7 @@
 }
 
 .sbr-form .sbr-form-submit-btn {
-  @extend .btn;
-  @extend .btn-primary;
+  @include main-button;
 }
 
 // common UI
@@ -217,6 +225,18 @@
 .sbr-review-comment-name {
   color: #595959;
   font-size: 90%;
+}
+
+.sbr-leave-review-box {
+  @extend .border;
+  @extend .border-primary;
+  @extend .rounded;
+  margin: 5px 0px 5px 0px;
+  padding: 7px;
+}
+
+.sbr-leave-review-collapse-button {
+  @include main-button;
 }
 
 // other minor stuff

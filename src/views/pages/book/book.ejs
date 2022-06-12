@@ -23,6 +23,26 @@
           </td>
         </tr>
       </table>
+      <button type="button" class="sbr-leave-review-collapse-button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
+      <div class="sbr-leave-review-box collapse" id="review_form_container">
+        <form class="sbr-form" id="review_form">
+          <div class="sbr-form-field">
+            <label class="sbr-form-label">Rating</label>
+            <div class="sbr-rating-star sbr-rating-star-dynamic">
+              <% for (let i=5; i>=1; i--) { %>
+                <input type="radio" name="rating" id="rating<%= i %>" disabled<% if (Math.round(rating)===i) { %> checked<% } %>>
+                <label for="rating<%= i %>"></label>
+              <% } %>
+            </div>
+          </div>
+          <div class="sbr-form-field">
+            <label for="commentTextArea">Comment</label>
+            <textarea class="form-control" id="commentTextArea" rows="3"></textarea>
+          </div>
+          <button type="submit" class="sbr-form-submit-btn">Submit review</button>
+        </form>
+        <div id="form_submit_info"></div>
+      </div>
       <h4>Reviews:</h4>
       <% for (k in reviews) { %>
         <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
@@ -37,5 +57,64 @@
       <% } %>
     </div>
     <%- include('../../includes/footer') %>
+    <script>
+      function formSubmit(infobox) {
+        const isbn = document.getElementById('isbn').value.trim().replace(/-/g, '');
+        if (!isbnValid) {
+          Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
+          return;
+        }
+        
+        let checkedStar;
+        if (document.getElementById('rating1').checked) {
+          checkedStar = 1;
+        } else if (document.getElementById('rating2').checked) {
+          checkedStar = 2;
+        } else if (document.getElementById('rating3').checked) {
+          checkedStar = 3;
+        } else if (document.getElementById('rating4').checked) {
+          checkedStar = 4;
+        } else if (document.getElementById('rating5').checked) {
+          checkedStar = 5;
+        } else {
+          Common.CommonUI.errorMessage(infobox, 'Please select a rating.');
+          return;
+        }
+
+        let comment = document.getElementById('commentTextArea').value;
+        if (comment === '') {
+          comment = null;
+        }
+        Common.CommonUI.loadingIcon(infobox);
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            Common.CommonUI.successMessage(infobox, this.responseText);
+          } else if (this.readyState == 4) {
+            Common.CommonUI.errorMessage(infobox, this.responseText);
+          }
+        };
+
+        xhttp.open('POST', '<%= config.siteUrl %>/books/post-review/submit/', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        const data = {
+          isbn: isbn,
+          rating: checkedStar,
+          comment: comment
+        };
+        xhttp.send(JSON.stringify(data));
+      }
+    </script>
+    <script>
+      document.getElementById('review_form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (!Account.checkLogin()) {
+          window.location.href = '<%= config.siteUrl %>/account/log-in/';
+          return;
+        }
+        formSubmit(document.getElementById('form_submit_info'));
+      });
+    </script>
   </body>
 </html>
