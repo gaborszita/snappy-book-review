@@ -70,7 +70,7 @@
               <label for="review_<%= k %>_rating_<%= i %>"></label>
             <% } %>
           </div>
-          <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
+          <% if (reviews[k].comment!=null) { %><p><%- reviews[k].comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
         </div>
         <% if (Number(k)+1<reviews.length) { console.log('rating: ' + reviews[k].rating) %><hr><% } %>
       <% } %>
