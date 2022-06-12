@@ -43,7 +43,10 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
         }
         Promise.all(userWaits).then((users) => {
           const reviewsResponse = [];
-          const currentUser = req.user as IUser;
+          let currentUser;
+          if (req.isAuthenticated()) {
+            currentUser = req.user as IUser;
+          }
           let userReview = null;
           for (const i in reviews) {
             if (users[i] == null) {
@@ -51,7 +54,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
             }
             const review = { name: users[i].fullName, 
               rating: reviews[i].rating, comment: reviews[i].comment }
-            if (users[i].id === currentUser.id) {
+            if (req.isAuthenticated() && users[i].id === currentUser.id) {
               userReview = review;
             } else {
               reviewsResponse.push(review);
