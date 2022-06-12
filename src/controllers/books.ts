@@ -177,7 +177,7 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
       createReview();
     });
   });
-}
+};
 
 export const deleteReviewSubmit = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
@@ -207,7 +207,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
       });
     }
   });
-}
+};
 
 export const isbnValidator = async (req: Request, res: Response, next: NextFunction) => {
   await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);

@@ -64,10 +64,10 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
       res.send('Account created');
     });
   });
-}
+};
 
 // log out submit
 export const logOutSubmit = function (req: Request, res: Response): void {
   req.logout();
   res.send('OK');
-}
+};
