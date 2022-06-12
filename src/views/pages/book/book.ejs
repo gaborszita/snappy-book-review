@@ -76,7 +76,7 @@
     <%- include('../../includes/footer') %>
     <script>
       function formSubmit(infobox) {
-        const isbn = <%= isbn %>;
+        const isbn = '<%= isbn %>';
 
         let checkedStar;
         if (document.getElementById('form_rating_1').checked) {
