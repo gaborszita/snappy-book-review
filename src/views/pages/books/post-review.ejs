@@ -30,8 +30,8 @@
           </div>
         </div>
         <div class="sbr-form-field">
-          <label for="commentTextArea">Comment</label>
-          <textarea class="form-control" id="commentTextArea" rows="3"></textarea>
+          <label for="comment_text_area">Comment</label>
+          <textarea class="form-control" id="comment_text_area" rows="3"></textarea>
         </div>
         <button type="submit" class="sbr-form-submit-btn">Submit review</button>
       </form>
@@ -92,7 +92,7 @@
           return;
         }
 
-        let comment = document.getElementById('commentTextArea').value;
+        let comment = document.getElementById('comment_text_area').value;
         if (comment === '') {
           comment = null;
         }
