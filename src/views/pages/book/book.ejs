@@ -111,7 +111,7 @@
     <script>
       document.getElementById('review_form').addEventListener('submit', function(event) {
         event.preventDefault();
-        if (!Account.checkLogin()) {
+        if (!Account.Account.checkLogin()) {
           window.location.href = '<%= config.siteUrl %>/account/log-in/';
           return;
         }
