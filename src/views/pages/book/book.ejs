@@ -63,15 +63,15 @@
       <% } %>
       <% for (k in reviews) { %>
         <div>
-        <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
-        <div class="sbr-rating-star">
-          <% for (let i=5; i>=1; i--) { %>
-            <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
-            <label for="review_<%= k %>_rating_<%= i %>"></label>
-          <% } %>
-        </div>
-        <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
-        <% if (k+1<reviews.length) { %><hr><% } %>
+          <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
+          <div class="sbr-rating-star">
+            <% for (let i=5; i>=1; i--) { %>
+              <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
+              <label for="review_<%= k %>_rating_<%= i %>"></label>
+            <% } %>
+          </div>
+          <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
+          <% if (k+1<reviews.length) { %><hr><% } %>
         </div>
       <% } %>
     </div>
@@ -125,9 +125,9 @@
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-          new Common.Collapse(ratingBox, {
-            hide: true
-          });
+            new Common.Collapse(ratingBox, {
+              hide: true
+            });
           } else if (this.readyState == 4) {
             ratingBox.classList.remove('sbr-review-comment-user-deleting');
             Common.CommonUI.errorMessage(errorInfoBox, this.responseText);
