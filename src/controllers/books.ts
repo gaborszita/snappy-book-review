@@ -90,12 +90,17 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
     return;
   }
 
+  if (typeof isbn !== 'string' || 
+    (comment!==null && typeof comment !== 'string') || typeof rating !== 'number') {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
   if (comment==='') {
     comment = null;
   }
 
-  const ratingNum = Number(rating);
-  if (rating==='' || isNaN(ratingNum) || ratingNum<1 || ratingNum>5) {
+  if (rating<1 || rating>5) {
     res.status(400).send('Invalid data');
     return;
   }
@@ -120,6 +125,7 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
   const createReview = () => {
     const ratingObj = new Review({
       user: user._id,
+      isbn: isbn,
       rating: rating,
       comment: comment
     });
@@ -173,8 +179,8 @@ export const postReviewSubmit = (req: Request, res: Response, next: NextFunction
 
 export const isbnValidator = (req: Request, res: Response, next: NextFunction): void => {
   const isbn = req.query.isbn;
-  if (isbn==null || isbn==='' || isNaN(Number(isbn))) {
-    res.status(400).send('Malformed request');
+  if (typeof isbn !== 'string' || !/^\d+$/.test(isbn)) {
+    res.status(400).send('Invalid data');
     return;
   }
 
@@ -202,7 +208,7 @@ function checkIsbn(isbn, callback) {
 }
 
 function checkIsbnAuthorTitle(isbn, callback) {
-  if (isbn==='' || isNaN(Number(isbn))) {
+  if (!/^\d+$/.test(isbn)) {
     callback(null);
   }
 
