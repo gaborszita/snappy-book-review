@@ -59,7 +59,7 @@
           <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>          
           <div id="review_delete_error_info"></div>
         </div>
-        <% if (reviews.length>0) { %><hr><% } %>
+        <% if (reviews.length>0) { %><hr id="user_review_hr"><% } %>
       <% } %>
       <% for (k in reviews) { %>
         <div>
@@ -128,6 +128,10 @@
             new Common.Collapse(ratingBox, {
               hide: true
             });
+            const userReviewHrElement = document.getElementById('user_review_hr');
+            if (userReviewHrElement != null) {
+              userReviewHrElement.remove();
+            }
           } else if (this.readyState == 4) {
             ratingBox.classList.remove('sbr-review-comment-user-deleting');
             Common.CommonUI.errorMessage(errorInfoBox, this.responseText);
