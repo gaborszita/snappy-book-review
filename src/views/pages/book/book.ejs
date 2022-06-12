@@ -56,7 +56,7 @@
               <label for="user_review_rating_<%= i %>"></label>
             <% } %>
           </div>
-          <% if (userReview.comment!=null) { %><p><%= userReview.comment %></p><% } %>
+          <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
           <% if (reviews.length>0) { %><hr><% } %>
           <div id="review_delete_error_info"></div>
         </div>
