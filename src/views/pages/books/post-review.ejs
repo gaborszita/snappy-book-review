@@ -17,16 +17,10 @@
         <div class="sbr-form-field">
           <label class="sbr-form-label">Rating</label>
           <div class="sbr-rating-star sbr-rating-star-dynamic">
-            <input type="radio" name="rating" id="rating5">
-            <label for="rating5"></label>
-            <input type="radio" name="rating" id="rating4">
-            <label for="rating4"></label>
-            <input type="radio" name="rating" id="rating3">
-            <label for="rating3"></label>
-            <input type="radio" name="rating" id="rating2">
-            <label for="rating2"></label>
-            <input type="radio" name="rating" id="rating1">
-            <label for="rating1"></label>
+            <% for (let i=5; i>=1; i--) { %>
+              <input type="radio" name="rating" id="rating_<%= i %>">
+              <label for="rating_<%= i %>"></label>
+            <% } %>
           </div>
         </div>
         <div class="sbr-form-field">
@@ -77,15 +71,15 @@
         }
         
         let checkedStar;
-        if (document.getElementById('rating1').checked) {
+        if (document.getElementById('rating_1').checked) {
           checkedStar = 1;
-        } else if (document.getElementById('rating2').checked) {
+        } else if (document.getElementById('rating_2').checked) {
           checkedStar = 2;
-        } else if (document.getElementById('rating3').checked) {
+        } else if (document.getElementById('rating_3').checked) {
           checkedStar = 3;
-        } else if (document.getElementById('rating4').checked) {
+        } else if (document.getElementById('rating_4').checked) {
           checkedStar = 4;
-        } else if (document.getElementById('rating5').checked) {
+        } else if (document.getElementById('rating_5').checked) {
           checkedStar = 5;
         } else {
           Common.CommonUI.errorMessage(infobox, 'Please select a rating.');
