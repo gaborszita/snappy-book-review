@@ -54,7 +54,7 @@
             <label for="review_<%= k %>_rating_<%= i %>"></label>
           <% } %>
         </div>
-        <p><%= reviews[k].comment %></p>
+        <% if (reviews[k].comment!=null) { %><p><%= reviews[k].comment %></p><% } %>
         <% if (k+1<reviews.length) { %><hr><% } %>
       <% } %>
     </div>
