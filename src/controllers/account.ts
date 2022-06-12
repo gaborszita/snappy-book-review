@@ -29,6 +29,8 @@ export const createAccount = (req: Request, res: Response): void => {
 
 // create account submit
 export const createAccountSubmit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  await body('firstName').isString().not().isEmpty();
+  await body('lastName').isString().not().isEmpty();
   await body('email').isEmail().normalizeEmail().run(req);
   await body('password').isLength({ min: 8, max: 20 })
     .custom((value: string) => /\d/.test(value))
