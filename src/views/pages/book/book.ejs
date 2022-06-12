@@ -61,22 +61,18 @@
     <%- include('../../includes/footer') %>
     <script>
       function formSubmit(infobox) {
-        const isbn = document.getElementById('isbn').value.trim().replace(/-/g, '');
-        if (!isbnValid) {
-          Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
-          return;
-        }
-        
+        const isbn = <%= isbn %>;
+
         let checkedStar;
-        if (document.getElementById('rating1').checked) {
+        if (document.getElementById('form_rating_1').checked) {
           checkedStar = 1;
-        } else if (document.getElementById('rating2').checked) {
+        } else if (document.getElementById('form_rating_2').checked) {
           checkedStar = 2;
-        } else if (document.getElementById('rating3').checked) {
+        } else if (document.getElementById('form_rating_3').checked) {
           checkedStar = 3;
-        } else if (document.getElementById('rating4').checked) {
+        } else if (document.getElementById('form_rating_4').checked) {
           checkedStar = 4;
-        } else if (document.getElementById('rating5').checked) {
+        } else if (document.getElementById('form_rating_5').checked) {
           checkedStar = 5;
         } else {
           Common.CommonUI.errorMessage(infobox, 'Please select a rating.');

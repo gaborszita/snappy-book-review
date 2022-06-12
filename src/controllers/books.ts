@@ -50,7 +50,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
               rating: reviews[i].rating, comment: reviews[i].comment });
           }
           console.log(reviewsResponse);
-          res.render('book/book', { title: bookFullTitle, rating: bookRating, reviews: reviewsResponse });
+          res.render('book/book', { title: bookFullTitle, isbn: isbn, rating: bookRating, reviews: reviewsResponse });
         }).catch((err) => {
           next(err);
         });
