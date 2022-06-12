@@ -24,7 +24,7 @@
         </tr>
       </table>
       <p></p>
-      <button type="button" class="sbr-leave-review-collapse-button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
+      <button type="button" class="sbr-leave-review-collapse-button" id="leave_review_button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
       <div class="sbr-leave-review-box collapse" id="review_form_container">
         <form class="sbr-form" id="review_form">
           <div class="sbr-form-field">
@@ -109,12 +109,16 @@
       }
     </script>
     <script>
-      document.getElementById('review_form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (!Account.Account.checkLogin()) {
+      document.getElementById('leave_review_button').addEventListener('click', function() {
+        if (!Account.Account.checkLogin('<%= config.loggedInCookie %>')) {
           window.location.href = '<%= config.siteUrl %>/account/log-in/';
           return;
         }
+      });
+    </script>
+    <script>
+      document.getElementById('review_form').addEventListener('submit', function(event) {
+        event.preventDefault();
         formSubmit(document.getElementById('form_submit_info'));
       });
     </script>
