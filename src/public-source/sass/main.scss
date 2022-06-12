@@ -232,6 +232,16 @@
   font-weight: bold;
 }
 
+.sbr-review-comment-user-delete {
+  color: #ff0000;
+  text-decoration: underline;
+  font-size: .8rem;
+}
+
+.sbr-review-comment-user-deleting {
+  background: #ff333366;
+}
+
 .sbr-leave-review-box {
   @extend .border;
   @extend .border-primary;

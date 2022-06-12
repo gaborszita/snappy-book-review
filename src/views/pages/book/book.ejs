@@ -47,15 +47,19 @@
       <p></p>
       <h4>Reviews:</h4>
       <% if (userReview != null) { %>
-        <span class="sbr-review-comment-name-user">Your review</span>
-        <div class="sbr-rating-star">
-          <% for (let i=5; i>=1; i--) { %>
-            <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
-            <label for="user_review_rating_<%= i %>"></label>
-          <% } %>
+        <div id="user_review" class="collapse show">
+          <span class="sbr-review-comment-name-user">Your review</span>
+          <a class="sbr-review-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
+          <div class="sbr-rating-star">
+            <% for (let i=5; i>=1; i--) { %>
+              <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
+              <label for="user_review_rating_<%= i %>"></label>
+            <% } %>
+          </div>
+          <% if (userReview.comment!=null) { %><p><%= userReview.comment %></p><% } %>
+          <% if (reviews.length>0) { %><hr><% } %>
+          <div id="review_delete_error_info"></div>
         </div>
-        <% if (userReview.comment!=null) { %><p><%= userReview.comment %></p><% } %>
-        <% if (reviews.length>0) { %><hr><% } %>
       <% } %>
       <% for (k in reviews) { %>
         <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
@@ -114,6 +118,14 @@
         };
         xhttp.send(JSON.stringify(data));
       }
+      function deleteReview(ratingBox) {
+        ratingBox.classList.add('sbr-review-comment-user-deleting');
+        setTimeout(() => {
+          new Common.Collapse(ratingBox, {
+            hide: true
+          });
+        }, '1000');
+      }
     </script>
     <script>
       document.getElementById('leave_review_button').addEventListener('click', function() {
@@ -127,6 +139,12 @@
       document.getElementById('review_form').addEventListener('submit', function(event) {
         event.preventDefault();
         formSubmit(document.getElementById('form_submit_info'));
+      });
+    </script>
+    <script>
+      document.getElementById('delete_review').addEventListener('click', function(event) {
+        deleteReview(document.getElementById('user_review'), 
+          document.getElementById('review_delete_error_info'));
       });
     </script>
   </body>
