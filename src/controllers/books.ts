@@ -38,7 +38,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
     if (book) {
       const bookRating = book.rating.toFixed(1);
       const bookFullTitle = book.author + ': ' + book.title;
-      Review.find({ isbn: isbn }, 'rating comment user', function(err, reviews) {
+      Review.find({ book: book }, 'rating comment user', function(err, reviews) {
         if (err) { return next(err) }
         const userWaits = [];
         for (const review of reviews) {
@@ -117,15 +117,15 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
 
   const user = req.user as IUser;
 
-  const createReview = () => {
+  const createReview = (book) => {
     const review = new Review({
       user: user._id,
-      isbn: isbn,
+      book: book,
       rating: rating,
       comment: comment
     });
   
-    Review.findOne({ isbn: isbn, user: user._id }, '', function(err, existingReview) {
+    Review.findOne({ book: book, user: user._id }, '', function(err, existingReview) {
       if (err) { return next(err) }
       if (existingReview) {
         existingReview.rating = rating;
@@ -167,12 +167,12 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
 
         book.save((err) => {
           if (err) { return next(err); }
-          createReview();
+          createReview(book);
         });
       });
       return;
     }
-    createReview();
+    createReview(existingBook);
   });
 };
 
@@ -193,16 +193,23 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
   const user = req.user as IUser;
   const isbn = req.body.isbn;
 
-  Review.findOneAndDelete({isbn: isbn, user: user._id}, function(err, deletedReview) {
+  Book.findOne({isbn: isbn}, function(err, book) {
     if (err) { return next(err) }
-    if (deletedReview===null) {
-      res.status(400).send('User doesn\'t have review on book with this isbn');
-    } else {
-      updateBookRating(isbn, (err) => {
-        if (err) { return next(err) }
-        res.send('OK');
-      });
+    if (book == null) {
+      res.status(400).send('Invalid data');
+      return;
     }
+    Review.findOneAndDelete({book: book, user: user._id}, function(err, deletedReview) {
+      if (err) { return next(err) }
+      if (deletedReview===null) {
+        res.status(400).send('Invalid data');
+      } else {
+        updateBookRating(isbn, (err) => {
+          if (err) { return next(err) }
+          res.send('OK');
+        });
+      }
+    });
   });
 };
 
