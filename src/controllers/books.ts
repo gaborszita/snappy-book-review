@@ -119,13 +119,13 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
 
   const createReview = (book) => {
     const review = new Review({
-      user: user._id,
+      user: user,
       book: book,
       rating: rating,
       comment: comment
     });
   
-    Review.findOne({ book: book, user: user._id }, '', function(err, existingReview) {
+    Review.findOne({ book: book, user: user }, '', function(err, existingReview) {
       if (err) { return next(err) }
       if (existingReview) {
         existingReview.rating = rating;
@@ -199,7 +199,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
       res.status(400).send('Invalid data');
       return;
     }
-    Review.findOneAndDelete({book: book, user: user._id}, function(err, deletedReview) {
+    Review.findOneAndDelete({book: book, user: user}, function(err, deletedReview) {
       if (err) { return next(err) }
       if (deletedReview===null) {
         res.status(400).send('Invalid data');
