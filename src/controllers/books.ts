@@ -149,32 +149,30 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
     });
   }
 
-  checkIsbn(isbn, (title) => {
-    if (title==null) {
-      res.status(400).send('Invalid data');
+  Book.findOne({ isbn: isbn }, '', function(err, existingBook) {
+    if (err) { return next(err) }
+    if (existingBook == null) {
+      checkIsbnAuthorTitleIsbn(isbn, (ret) => {
+        if (ret == null) {
+          res.status(400).send('Invalid data');
+          return;
+        }
+
+        const book = new Book({
+          isbn: ret.isbn,
+          author: ret.author,
+          title: ret.title,
+          rating: 0
+        });
+
+        book.save((err) => {
+          if (err) { return next(err); }
+          createReview();
+        });
+      });
       return;
     }
-
-    Book.findOne({ isbn: isbn }, '', function(err, existingBook) {
-      if (err) { return next(err) }
-      if (existingBook == null) {
-        checkIsbnAuthorTitleIsbn(isbn, (ret) => {
-          const book = new Book({
-            isbn: ret.isbn,
-            author: ret.author,
-            title: ret.title,
-            rating: 0
-          });
-
-          book.save((err) => {
-            if (err) { return next(err); }
-            createReview();
-          });
-        });
-        return;
-      }
-      createReview();
-    });
+    createReview();
   });
 };
 
