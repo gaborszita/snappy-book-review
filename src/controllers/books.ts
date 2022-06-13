@@ -158,9 +158,9 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
     Book.findOne({ isbn: isbn }, '', function(err, existingBook) {
       if (err) { return next(err) }
       if (existingBook == null) {
-        checkIsbnAuthorTitle(isbn, (ret) => {
+        checkIsbnAuthorTitleIsbn(isbn, (ret) => {
           const book = new Book({
-            isbn: isbn,
+            isbn: ret.isbn,
             author: ret.author,
             title: ret.title,
             rating: 0
@@ -233,7 +233,7 @@ export const isbnValidator = async (req: Request, res: Response, next: NextFunct
 };
 
 function checkIsbn(isbn, callback) {
-  checkIsbnAuthorTitle(isbn, (ret) => {
+  checkIsbnAuthorTitleIsbn(isbn, (ret) => {
     if (ret == null) {
       callback(null);
     } else {
@@ -242,7 +242,7 @@ function checkIsbn(isbn, callback) {
   });
 }
 
-function checkIsbnAuthorTitle(isbn, callback) {
+function checkIsbnAuthorTitleIsbn(isbn, callback) {
   if (!/^\d+$/.test(isbn)) {
     callback(null);
   }
@@ -274,9 +274,28 @@ function checkIsbnAuthorTitle(isbn, callback) {
             authorsStr += ', ';
           }
         }
+
+        const industryIdentifiers = body.items[0].volumeInfo.industryIdentifiers;
+        let isbn10, isbn13;
+        for (const identifier of industryIdentifiers) {
+          if (identifier.type === 'ISBN_13') {
+            isbn13 = identifier.identifier;
+          } else if (identifier.type === 'ISBN_10') {
+            isbn10 = identifier.identifier;
+          }
+        }
+
+        let retIsbn;
+        if (isbn13 != null) {
+          retIsbn = isbn13;
+        } else if (isbn10 != null) {
+          retIsbn = isbn10;
+        } else {
+          retIsbn = isbn;
+        }
         
         const title = body.items[0].volumeInfo.title;
-        callback({ author: authorsStr, title: title });
+        callback({ author: authorsStr, title: title, isbn: retIsbn });
       } else {
         callback(null);
       }
