@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include ('../../includes/head') %>
+    <title>Account details - Snappy Book Review</title>
+  </head>
+  <body>
+    <%- include('../../includes/header') %>
+    <div class="sbr-maincontainer">
+      <h1>Account settings</h1>
+      <form class="sbr-form" id="name_settings">
+        <div class="sbr-signup-form-container">
+          <div class="sbr-form-field sbr-signup-form-first-name">
+            <label for="first_name_input" class="sbr-form-label">First Name</label>
+            <input class="sbr-form-control" id="first_name_input">
+          </div>
+          <div class="sbr-form-field sbr-signup-form-last-name">
+            <label for="last_name_input" class="sbr-form-label">Last Name</label>
+            <input class="sbr-form-control" id="last_name_input">
+          </div>
+        </div>
+        <button type="submit" class="sbr-form-submit-btn">Change name</button>
+        <div id="name_form_submit_info"></div>
+      </form>
+      <form class="sbr-form" id="email_setting">
+        <div class="sbr-form-field">
+          <label for="email_input" class="sbr-form-label">Email adress</label>
+          <input type="email" class="sbr-form-control" id="email_input">
+        </div>
+        <button type="submit" class="sbr-form-submit-btn">Change email address</button>
+        <div id="email_form_submit_info"></div>
+      </form>
+      <form class="sbr-form" id="password_setting">
+        <div class="sbr-form-field">
+          <label for="password_input" class="sbr-form-label">Password</label>
+          <input type="password" class="sbr-form-control" id="password_input" aria-describedby="password_help">
+          <div id="password_help" class="sbr-form-text">
+            Your password must be 8-20 characters long, containing at least one letter and one number.
+          </div>
+        </div>
+        <div class="sbr-form-field">
+          <label for="verify_password_input" class="form-label">Verify password</label>
+          <input type="password" class="form-control" id="verify_password_input">
+        </div>
+        <button type="submit" class="sbr-form-submit-btn">Change password</button>
+        <div id="password_form_submit_info"></div>
+      </form>
+    </div>
+    <%- include('../../includes/footer') %>
+  </body>
+</html>

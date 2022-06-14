@@ -17,3 +17,6 @@ router.post('/create-account/submit/', account.createAccountSubmit);
 
 // POST request for log out submit
 router.post('/log-out/submit/', account.logOutSubmit);
+
+// GET request for account settings page
+router.get('/account-settings/', account.accountSettings);

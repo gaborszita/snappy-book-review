@@ -71,3 +71,8 @@ export const logOutSubmit = function (req: Request, res: Response): void {
   req.logout();
   res.send('OK');
 };
+
+// account settings page
+export const accountSettings = (req: Request, res: Response): void => {
+  res.render('account/account-settings');
+};
