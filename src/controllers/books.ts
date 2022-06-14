@@ -5,6 +5,7 @@ import { Review } from '../models/Review';
 import { IUser, User } from '../models/User';
 import { check, validationResult } from 'express-validator';
 
+// search page
 export const search = async (req: Request, res: Response, next: NextFunction) => {
   await check('q').isString().notEmpty().run(req);
   const errors = validationResult(req);
@@ -16,6 +17,7 @@ export const search = async (req: Request, res: Response, next: NextFunction) =>
   const words = query.trim().split(/\s+/);
   const regexps = [];
   for (const word of words) {
+    // escape special characters in regex
     const escapedWord = word.replace(/(\[|\]|\(|\)|\{|\}|\*|\+|\?|\||\^|\$|\.|\\)/g, '\\$&');
     const re = new RegExp(`( ${escapedWord} |^${escapedWord}|${escapedWord}$)`, 'i');
     regexps.push(re);
@@ -31,6 +33,7 @@ export const search = async (req: Request, res: Response, next: NextFunction) =>
   });
 };
 
+// book page
 export const book = (req: Request, res: Response, next: NextFunction) => {
   const isbn = req.params.bookISBN;
   Book.findOne({ isbn: isbn }, function(err, book) {
@@ -40,6 +43,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
       const bookFullTitle = book.author + ': ' + book.title;
       Review.find({ book: book }, 'rating comment user', function(err, reviews) {
         if (err) { return next(err) }
+        // get user of each review
         const userWaits = [];
         for (const review of reviews) {
           userWaits.push(User.findById(review.user.toString(), 'firstName lastName fullName'));
@@ -58,6 +62,8 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
             const review = { name: users[i].fullName, 
               rating: reviews[i].rating, comment: reviews[i].comment }
             if (req.isAuthenticated() && users[i].id === currentUser.id) {
+              // store review of user in a different variable as it will be 
+              // displayed separately from other reviews
               userReview = review;
             } else {
               reviewsResponse.push(review);
@@ -82,10 +88,12 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+// post review page
 export const postReview = (req: Request, res: Response): void => {
   res.render('books/post-review');
 };
 
+// post review submit
 export const postReviewSubmit = async(req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
     res.status(400).send('Not logged in');
@@ -176,6 +184,7 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
   });
 };
 
+// delete review submit
 export const deleteReviewSubmit = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
     res.status(400).send('Not logged in');
@@ -213,6 +222,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
   });
 };
 
+// isbn validator
 export const isbnValidator = async (req: Request, res: Response, next: NextFunction) => {
   await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
 
@@ -237,6 +247,13 @@ export const isbnValidator = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+/**
+ * Checks if an ISBN is valid. If yes, it calls the callback function with the 
+ * full book title as the argument (including both author and title). 
+ * Otherwise, calls the callback function with null as the argument.
+ * @param isbn Book isbn
+ * @param callback Callback function
+ */
 function checkIsbn(isbn, callback) {
   checkIsbnAuthorTitleIsbn(isbn, (ret) => {
     if (ret == null) {
@@ -247,6 +264,14 @@ function checkIsbn(isbn, callback) {
   });
 }
 
+/**
+ * Checks if an ISBN is valid. If yes, it calls the callback function with the 
+ * following JSON {author, title, isbn}. It returns the ISBN, because it 
+ * attempts to use ISBN-13 as the preferred method of stroing books in the db.
+ * Otherwise, calls the callback function with null as the argument.
+ * @param isbn Book isbn
+ * @param callback Callback function
+ */
 function checkIsbnAuthorTitleIsbn(isbn, callback) {
   if (!/^\d+$/.test(isbn)) {
     callback(null);
@@ -280,6 +305,7 @@ function checkIsbnAuthorTitleIsbn(isbn, callback) {
           }
         }
 
+        // Use ISBN-13 if possible
         const industryIdentifiers = body.items[0].volumeInfo.industryIdentifiers;
         let isbn10, isbn13;
         for (const identifier of industryIdentifiers) {
@@ -308,6 +334,13 @@ function checkIsbnAuthorTitleIsbn(isbn, callback) {
   });
 }
 
+/**
+ * Recalculates book rating. If there is an error, it calls the callback 
+ * function with the error as the argument. If no errors are present, it 
+ * calls the callback function with no arguments.
+ * @param isbn Book isbn
+ * @param callback Callback function
+ */
 function updateBookRating(isbn, callback) {
   Review.find({ isbn: isbn }, 'rating', function(err, reviews) {
     if (err) { return callback(err) }
