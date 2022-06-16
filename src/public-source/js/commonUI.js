@@ -10,8 +10,8 @@ export class CommonUI {
     '</div>';
   }
   static loadingIcon(infobox) {
-    infobox.innerHTML = '<p></p><div class="sbr-loading-icon" role="status">' + 
+    infobox.innerHTML = '<br><div class="sbr-loading-icon" role="status">' + 
     '<span>Loading...</span>' + 
-    '</div><p></p>';
+    '</div><br>';
   }
 }
