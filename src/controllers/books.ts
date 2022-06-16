@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Book, IBook } from '../models/Book';
+import { Book } from '../models/Book';
 import https from 'https';
 import { Review } from '../models/Review';
 import { IUser, User } from '../models/User';
