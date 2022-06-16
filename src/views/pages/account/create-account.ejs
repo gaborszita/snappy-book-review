@@ -10,7 +10,7 @@
       <h1>Create an account</h1>
       <p>Want to log in? Click <a href="<%= config.siteUrl %>/account/log-in/">here</a> to log in.</p>
       <p>An account will let you leave reviews on books and much more.</p>
-      <form class="sbr-form" id="signupform">
+      <form class="sbr-form" id="sign_up_form">
         <div class="sbr-signup-form-container">
           <div class="sbr-form-field sbr-signup-form-first-name">
             <label for="first_name_input" class="sbr-form-label">First Name</label>
@@ -112,7 +112,7 @@
       }
     </script>
     <script>
-      document.getElementById('signupform').addEventListener('submit',
+      document.getElementById('sign_up_form').addEventListener('submit',
         function (event) {
           event.preventDefault();
           formSubmit(document.getElementById('form_submit_info'));
