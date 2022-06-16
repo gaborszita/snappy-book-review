@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Book } from '../models/Book';
+import { Book, IBook } from '../models/Book';
 import https from 'https';
 import { Review } from '../models/Review';
 import { IUser, User } from '../models/User';
@@ -140,7 +140,7 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
         existingReview.comment = comment;
         existingReview.save((err) => {
           if (err) { return next(err); }
-          updateBookRating(isbn, (err) => {
+          updateBookRating(book, (err) => {
             if (err) { return next(err); }
             res.send('Review updated');
           });
@@ -149,7 +149,7 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
       }
       review.save((err) => {
         if (err) { return next(err); }
-        updateBookRating(isbn, () => {
+        updateBookRating(book, (err) => {
           if (err) { return next(err); }
           res.send('Review saved');
         });
@@ -214,7 +214,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
       if (deletedReview===null) {
         res.status(400).send('Invalid data');
       } else {
-        updateBookRating(isbn, (err) => {
+        updateBookRating(book, (err) => {
           if (err) { return next(err) }
           res.send('OK');
         });
@@ -374,8 +374,8 @@ function checkIsbnAuthorTitleIsbn(isbn: string, callback: (err: Error,
  * @param isbn Book isbn
  * @param callback Callback function
  */
-function updateBookRating(isbn, callback) {
-  Review.find({ isbn: isbn }, 'rating', function(err, reviews) {
+function updateBookRating(book, callback: (err) => void) {
+  Review.find({ book: book }, 'rating', function(err, reviews) {
     if (err) { return callback(err) }
     let totalRating = 0;
     for (const review of reviews) {
@@ -384,9 +384,10 @@ function updateBookRating(isbn, callback) {
     if (reviews.length > 0) {
       totalRating /= reviews.length;
     }
-    Book.findOneAndUpdate({ isbn: isbn }, { rating: totalRating }, function(err) {
+    book.rating = totalRating;
+    book.save((err) => {
       if (err) { return callback(err) }
-      callback();
+      callback(null);
     });
   });
 }
