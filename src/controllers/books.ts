@@ -160,16 +160,17 @@ export const postReviewSubmit = async(req: Request, res: Response, next: NextFun
   Book.findOne({ isbn: isbn }, '', function(err, existingBook) {
     if (err) { return next(err) }
     if (existingBook == null) {
-      checkIsbnAuthorTitleIsbn(isbn, (ret) => {
-        if (ret == null) {
+      checkIsbnAuthorTitleIsbn(isbn, (err, data) => {
+        if (err) { return next(err) }
+        if (data == null) {
           res.status(400).send('Invalid data');
           return;
         }
 
         const book = new Book({
-          isbn: ret.isbn,
-          author: ret.author,
-          title: ret.title,
+          isbn: data.isbn,
+          author: data.author,
+          title: data.title,
           rating: 0
         });
 
@@ -202,7 +203,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response, next: Next
   const user = req.user as IUser;
   const isbn = req.body.isbn;
 
-  Book.findOne({isbn: isbn}, function(err, book) {
+  Book.findOne({isbn: isbn}, '', function(err, book) {
     if (err) { return next(err) }
     if (book == null) {
       res.status(400).send('Invalid data');
@@ -232,14 +233,15 @@ export const isbnValidator = async (req: Request, res: Response, next: NextFunct
     return;
   }
 
-  const isbn = req.query.isbn;
+  const isbn = req.query.isbn as string;
 
   try {
-    checkIsbn(isbn, (title) => {
-      if (title === null) {
+    checkIsbn(isbn, (err, fullTitle) => {
+      if (err) { return next(err); }
+      if (fullTitle === null) {
         res.send(JSON.stringify({ found: false }));
       } else {
-        res.send(JSON.stringify({ found: true, title: title }));
+        res.send(JSON.stringify({ found: true, title: fullTitle }));
       }
     });
   } catch (e) {
@@ -254,12 +256,13 @@ export const isbnValidator = async (req: Request, res: Response, next: NextFunct
  * @param isbn Book isbn
  * @param callback Callback function
  */
-function checkIsbn(isbn, callback) {
-  checkIsbnAuthorTitleIsbn(isbn, (ret) => {
-    if (ret == null) {
-      callback(null);
+function checkIsbn(isbn: string, callback: (err: Error, fullTitle: string) => void) {
+  checkIsbnAuthorTitleIsbn(isbn, (err, data) => {
+    if (err) { callback(err, null); return; }
+    if (data == null) {
+      callback(null, null);
     } else {
-      callback(ret.author + ': ' + ret.title);
+      callback(null, data.author + ': ' + data.title);
     }
   });
 }
@@ -272,15 +275,18 @@ function checkIsbn(isbn, callback) {
  * @param isbn Book isbn
  * @param callback Callback function
  */
-function checkIsbnAuthorTitleIsbn(isbn, callback) {
+function checkIsbnAuthorTitleIsbn(isbn: string, callback: (err: Error, 
+  data: { author: string, title: string, isbn: string }) => void) {
   if (!/^\d+$/.test(isbn)) {
-    callback(null);
+    callback(null, null);
+    return;
   }
 
   const url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn;
   https.get(url, (isbnRes) => {
     if (isbnRes.statusCode !== 200) {
-      throw new Error('Google book API status code ' + isbnRes.statusCode);
+      callback(new Error('Google book API status code ' + isbnRes.statusCode), null);
+      return;
     }
 
     let data = '';
@@ -293,9 +299,28 @@ function checkIsbnAuthorTitleIsbn(isbn, callback) {
       try {
         body = JSON.parse(data);
       } catch (e) {
-        return new Error('Google book API response couldn\'t be parsed as JSON');
+        const err = new Error('Google book API response couldn\'t be parsed as JSON', { cause: e });
+        callback(err, null);
+        return;
+      }
+      const badFormatErrMsg = 'Google book API bad response format';
+
+      if (typeof body.totalItems !== 'number') {
+        callback(new Error(badFormatErrMsg), null);
+        return;
       }
       if (body.totalItems>0) {
+        if (!Array.isArray(body.items) || body.items.length<1 || 
+          body.items[0].volumeInfo == null || 
+          body.items[0].volumeInfo.authors == null || 
+          !Array.isArray(body.items[0].volumeInfo.authors) || 
+          !body.items[0].volumeInfo.authors.every(elem => (typeof elem === 
+            'string')) || 
+          body.items[0].volumeInfo.industryIdentifiers == null || 
+          !Array.isArray(body.items[0].volumeInfo.industryIdentifiers)) {
+            callback(new Error(badFormatErrMsg), null);
+            return;
+        }
         const authors = body.items[0].volumeInfo.authors;
         let authorsStr = '';
         for (let i=0; i<authors.length; i++) {
@@ -310,8 +335,16 @@ function checkIsbnAuthorTitleIsbn(isbn, callback) {
         let isbn10, isbn13;
         for (const identifier of industryIdentifiers) {
           if (identifier.type === 'ISBN_13') {
+            if (typeof identifier.identifier !== 'string') {
+              callback(new Error(badFormatErrMsg), null);
+              return;
+            }
             isbn13 = identifier.identifier;
           } else if (identifier.type === 'ISBN_10') {
+            if (typeof identifier.identifier !== 'string') {
+              callback(new Error(badFormatErrMsg), null);
+              return;
+            }
             isbn10 = identifier.identifier;
           }
         }
@@ -326,9 +359,9 @@ function checkIsbnAuthorTitleIsbn(isbn, callback) {
         }
         
         const title = body.items[0].volumeInfo.title;
-        callback({ author: authorsStr, title: title, isbn: retIsbn });
+        callback(null, { author: authorsStr, title: title, isbn: retIsbn });
       } else {
-        callback(null);
+        callback(null, null);
       }
     });
   });
