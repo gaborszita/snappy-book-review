@@ -50,6 +50,11 @@
     </div>
     <%- include('../../includes/footer') %>
     <script>
+      if (!Account.Account.checkLogin('<%= config.loggedInCookie %>')) {
+        window.location.href = '<%= config.siteUrl %>/account/log-in/';
+      }
+    </script>
+    <script>
       function nameSubmit(infobox) {
         const nameregex = /^[a-zA-Z ]{1,255}$/;
         var firstName = document.getElementById('first_name_input').value;
