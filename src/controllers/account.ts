@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { User, AccountState } from '../models/User';
+import { User, AccountState, IUser } from '../models/User';
 import { body, validationResult } from 'express-validator';
 import passport from 'passport';
 
@@ -76,3 +76,63 @@ export const logOutSubmit = function (req: Request, res: Response): void {
 export const accountSettings = (req: Request, res: Response): void => {
   res.render('account/account-settings');
 };
+
+// account settings submit
+export const accountSettingsSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.isAuthenticated()) {
+    res.status(400).send('Not logged in');
+    return;
+  }
+
+  await body('setting').isString().custom((value: string) => {
+    return ['name', 'email', 'password'].includes(value);
+  }).run(req);
+  if (req.body.setting === 'name') {
+    await body('firstName').isString().notEmpty().run(req);
+    await body('lastName').isString().notEmpty().run(req);
+  } else if (req.body.setting === 'email') {
+    await body('email').isEmail().normalizeEmail().run(req);
+  } else if (req.body.setting === 'password') {
+    await body('password').isLength({ min: 8, max: 20 })
+    .custom((value: string) => /\d/.test(value))
+    .custom((value: string) => /[a-zA-Z]/.test(value)).run(req);
+  }
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const user = req.user as IUser;
+
+  if (req.body.setting === 'name') {
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    await user.save((err) => {
+      if (err) { return next(err); }
+      res.send('Name changed successfully!');
+    });
+  } else if (req.body.setting === 'email') {
+    user.email = req.body.email;
+    // check if email is already in use
+    User.findOne({ email: req.body.email }, function (err, existingUser) {
+      if (err) { return next(err) }
+      if (existingUser) {
+        res.status(400).send('An account with this email address already exists');
+        return;
+      }
+      user.save((err) => {
+        if (err) { return next(err); }
+        res.send('Email changed successfully!');
+      });
+    });
+  } else if (req.body.setting === 'password') {
+    user.password = req.body.password;
+    await user.save((err) => {
+      if (err) { return next(err); }
+      res.send('Password changed successfully!');
+    });
+  }
+}

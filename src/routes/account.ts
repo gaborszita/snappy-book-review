@@ -20,3 +20,6 @@ router.post('/log-out/submit/', account.logOutSubmit);
 
 // GET request for account settings page
 router.get('/account-settings/', account.accountSettings);
+
+// POST request for account settings submit
+router.post('/account-settings/submit/', account.accountSettingsSubmit);
