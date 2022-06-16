@@ -100,7 +100,7 @@
       function emailSubmit(infobox) {
         const emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
         const email = document.getElementById('email_input').value;
-        if (!email.match(emailregex)) {
+        if (!email.match(emailregex) || email.length > 254) {
           if (email.length > 0) {
             Common.CommonUI.errorMessage(infobox, 'Email address invalid.');
           } else {
