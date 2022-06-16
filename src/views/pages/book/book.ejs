@@ -45,7 +45,11 @@
         <div id="form_submit_info"></div>
       </div>
       <br><br>
-      <h4>Reviews:</h4>
+      <% if (userReview != null || reviews.length>0) { %>
+        <h4>Reviews:</h4>
+      <% } else { %>
+        <h5>No reviews for this book</h5>
+      <% } %>
       <% if (userReview != null) { %>
         <div id="user_review" class="collapse show">
           <span class="sbr-review-comment-name-user">Your review</span>
