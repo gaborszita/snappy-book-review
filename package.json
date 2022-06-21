@@ -8,7 +8,7 @@
     "clean": "rimraf dist/*",
     "build-tsc": "tsc",
     "build-sass": "sass src/public/sass:dist/public/css",
-    "build-public-js": "webpack --config webpack-public-js.config.js",
+    "build-public-js": "webpack --config webpack-public-js.config.ts",
     "build": "npm run clean && npm run lint && npm run build-tsc && npm run build-sass && npm run build-public-js && npm run copy-assets && echo \"Build completed successfully.\"",
     "copy-assets": "ts-node copyAssets.ts",
     "lint": "tsc --noEmit && eslint . --ext .ts --fix",

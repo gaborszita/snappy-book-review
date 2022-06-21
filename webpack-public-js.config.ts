@@ -1,11 +1,12 @@
-require('dotenv').config();
-const path = require('path');
+import dotenv from 'dotenv';
+dotenv.config();
+import path from 'path';
 
 const mode = process.env.NODE_ENV==='development' ? 'development' : 'production';
 const outputPath = path.resolve(__dirname, 'dist/public/js');
 const stats = 'errors-warnings';
 
-module.exports = [
+const config = [
   {
     mode: mode,
     entry: './src/public/js/main.js',
@@ -33,3 +34,5 @@ module.exports = [
     stats: stats
   }
 ]
+
+export default config;
