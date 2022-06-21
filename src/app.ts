@@ -36,7 +36,7 @@ export async function appInit(): Promise<express.Express> {
     console.error('Please check if MongoDB was able to connect and that ' + 
       'you set up application correctly!');
     console.error('Application cannot continue without config data, exiting.');
-    throw 'Failed to get config';
+    throw new Error('Failed to get config');
   });
 
   // Create Express server
