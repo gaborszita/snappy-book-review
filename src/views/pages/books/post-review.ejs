@@ -33,7 +33,7 @@
     </div>
     <%- include('../../includes/footer') %>
     <script>
-      if (!Account.Account.checkLogin('<%= config.loggedInCookie %>')) {
+      if (!Common.Account.checkLogin()) {
         window.location.href = '<%= config.siteUrl %>/account/log-in/';
       }
     </script>

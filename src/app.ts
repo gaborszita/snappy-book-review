@@ -86,6 +86,11 @@ export async function appInit(): Promise<express.Express> {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.use(function(req, res, next) {
+    res.locals.user = req.user;
+    next();
+  });
+
   // Express configuration
   app.set('port', process.env.PORT || 3000); // default port 3000
   app.set('views', path.join(__dirname, './views/pages'));

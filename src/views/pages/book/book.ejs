@@ -152,7 +152,7 @@
     </script>
     <script>
       document.getElementById('review_form_container').addEventListener('show.bs.collapse', function() {
-        if (!Account.Account.checkLogin('<%= config.loggedInCookie %>')) {
+        if (!Common.Account.checkLogin()) {
           window.location.href = '<%= config.siteUrl %>/account/log-in/';
           return;
         }

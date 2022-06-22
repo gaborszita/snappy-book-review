@@ -18,16 +18,16 @@
       </form>
       <ul>
         <li>
-          <a id="login_button" href="<%= config.siteUrl %>/account/log-in/">Log in</a>
+          <a id="login_button" href="<%= config.siteUrl %>/account/log-in/" <% if (user) { %>style="display: none"<% } %>>Log in</a>
         </li>
         <li>
-          <a id="signup_button" href="<%= config.siteUrl %>/account/create-account/">Create account</a>
+          <a id="signup_button" href="<%= config.siteUrl %>/account/create-account/" <% if (user) { %>style="display: none"<% } %>>Create account</a>
         </li>
         <li>
-          <a id="account_settings_button" href="<%= config.siteUrl %>/account/account-settings/">Account settings</a>
+          <a id="account_settings_button" href="<%= config.siteUrl %>/account/account-settings/" <% if (!user) { %>style="display: none"<% } %>>Account settings</a>
         </li>
         <li>
-          <a id="logout_button" href="javascript:void(0)">Log out</a>
+          <a id="logout_button" href="javascript:void(0)" <% if (!user) { %>style="display: none"<% } %>>Log out</a>
         </li>
       </ul>
     </div>

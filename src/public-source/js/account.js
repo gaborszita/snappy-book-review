@@ -1,33 +1,29 @@
 export class Account {
-  static checkLogin(cookieName) {
-    const defaultStylesheet = document.createElement('style');
-    defaultStylesheet.innerText = '#account_settings_button, #login_button, #signup_button, #logout_button { display: none; }';
-    document.head.appendChild(defaultStylesheet);
-
-    if (document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)')?.pop() === 'true') {
-      const stylesheet = document.createElement('style');
-      stylesheet.innerText = '#account_settings_button, #logout_button { display: list-item; }';
-      document.head.appendChild(stylesheet);
+  static checkLogin() {
+    if (document.cookie.match('(^|;)\\s*' + config.loggedInCookie + '\\s*=\\s*([^;]+)')?.pop() === 'true') {
+      document.getElementById('account_settings_button').style.removeProperty('display');
+      document.getElementById('logout_button').style.removeProperty('display');
+      document.getElementById('login_button').style.setProperty('display', 'none');
+      document.getElementById('signup_button').style.setProperty('display', 'none');
       return true;
     } else {
-      const stylesheet = document.createElement('style');
-      stylesheet.innerText = '#login_button, #signup_button { display: list-item; }';
-      document.head.appendChild(stylesheet);
+      document.getElementById('account_settings_button').style.setProperty('display', 'none');
+      document.getElementById('logout_button').style.setProperty('display', 'none');
+      document.getElementById('login_button').style.removeProperty('display');
+      document.getElementById('signup_button').style.removeProperty('display');
       return false;
     }
   }
-
-  static addLogOutHandler(loggedInCookie, logOutUrl) {
-    document.getElementById('logout_button').addEventListener('click', 
-      function () {
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          Account.checkLogin(loggedInCookie);
-        }
-      };
-      xhttp.open('POST', logOutUrl, true);
-      xhttp.send();
-    });
-  }
 }
+
+document.getElementById('logout_button').addEventListener('click', 
+  function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      Account.checkLogin();
+    }
+  };
+  xhttp.open('POST', config.siteUrl + '/account/log-out/submit/', true);
+  xhttp.send();
+});
