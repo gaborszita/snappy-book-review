@@ -71,7 +71,6 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
           }
           const responseData = {
             title: bookFullTitle,
-            isbn: isbn,
             rating: bookRating,
             userReview: userReview,
             reviews: reviewsResponse

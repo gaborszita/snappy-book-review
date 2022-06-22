@@ -17,12 +17,6 @@
       <p><a href="<%- config.siteUrl %>/books/post-review/">Leave a review for a book</a></p>
     </div>
     <%- include('../includes/footer') %>
-    <script>
-      document.getElementById('home_search_form').addEventListener('submit', function(event) {
-        if (document.getElementById('home_search_input').value === '') {
-          event.preventDefault();
-        }
-      });
-    </script>
+    <script src="<%= config.siteUrl %>/js/home.js"></script>
   </body>
 </html>

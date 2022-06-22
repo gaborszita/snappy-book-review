@@ -4,6 +4,7 @@ import path from 'path';
 import webpack from 'webpack';
 import mongoose from 'mongoose';
 import { config } from './src/util/config';
+import glob from 'glob';
 
 export default async () => {
   const mode = process.env.NODE_ENV==='development' ? 'development' : 'production';
@@ -28,9 +29,9 @@ export default async () => {
 
   mongoose.disconnect();
 
-  const webpackConfig = {
+  const webpackConfig = [{
     mode: mode,
-    entry: './src/public/js/webpack/main.js',
+    entry: './src/public/js/main.js',
     output: {
       filename: 'main.js',
       path: outputPath,
@@ -48,7 +49,27 @@ export default async () => {
       })
     ],
     stats: stats
-  }
+  }, {
+    mode: mode,
+    entry: glob.sync('./src/public/js/pages/**/*.js').reduce(function(obj, el){
+      obj[el.replace(path.join('./src/public/js/pages/'),
+        path.join('./'))] = el;
+      return obj;
+   },{}),
+    output: {
+      filename: '[name]',
+      path: outputPath
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        config: JSON.stringify({
+          siteUrl: configData.siteUrl,
+          loggedInCookie: configData.loggedInCookie
+        })
+      })
+    ],
+    stats: stats
+  }];
 
   return webpackConfig;
 };
