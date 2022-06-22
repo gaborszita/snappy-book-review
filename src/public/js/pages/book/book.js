@@ -1,8 +1,7 @@
 'use strict';
 
 function formSubmit(infobox) {
-  const strippedUrl = window.location.href.replace(/\/$/, '');
-  const isbn = strippedUrl.substring(strippedUrl.lastIndexOf('/') + 1);
+  const isbn = document.getElementById('isbn').value;
 
   let checkedStar;
   if (document.getElementById('form_rating_1').checked) {
@@ -46,8 +45,7 @@ function formSubmit(infobox) {
 }
 
 function deleteReview(ratingBox, errorInfoBox) {
-  const strippedUrl = window.location.href.replace(/\/$/, '');
-  const isbn = strippedUrl.substring(strippedUrl.lastIndexOf('/') + 1);
+  const isbn = document.getElementById('isbn').value;
 
   ratingBox.classList.add('sbr-review-comment-user-deleting');
   const xhttp = new XMLHttpRequest();

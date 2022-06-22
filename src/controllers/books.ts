@@ -72,6 +72,7 @@ export const book = (req: Request, res: Response, next: NextFunction) => {
           const responseData = {
             title: bookFullTitle,
             rating: bookRating,
+            isbn: isbn,
             userReview: userReview,
             reviews: reviewsResponse
           }
