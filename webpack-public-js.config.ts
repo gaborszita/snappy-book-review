@@ -30,7 +30,7 @@ export default async () => {
 
   const webpackConfig = {
     mode: mode,
-    entry: './src/public/js/main.js',
+    entry: './src/public/js/webpack/main.js',
     output: {
       filename: 'main.js',
       path: outputPath,

@@ -1,3 +1,5 @@
+'use strict';
+
 export class Account {
   static checkLogin() {
     if (document.cookie.match('(^|;)\\s*' + config.loggedInCookie + '\\s*=\\s*([^;]+)')?.pop() === 'true') {

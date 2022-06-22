@@ -1,3 +1,5 @@
+'use strict';
+
 export class CommonUI {
   static errorMessage(infobox, message) {
     infobox.innerHTML = '<div class="sbr-error-message" role="alert"> '
