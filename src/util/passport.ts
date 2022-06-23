@@ -1,6 +1,6 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
-import { User, IUser } from '../models/User';
+import { User, IUser, AccountState } from '../models/User';
 import setCookie from 'set-cookie-parser';
 import { Request, Response } from 'express';
 
@@ -9,7 +9,8 @@ const LocalStrategy = passportLocal.Strategy;
 // email and password authentication
 passport.use(new LocalStrategy ( { usernameField: 'email' },
   function(email, password, done) {
-    User.findOne({ email: email }, function(err, user) {
+    User.findOne({ email: email, accountState: AccountState.Active }, 
+      function(err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       user.verifyPassword(password, function(err, match) {

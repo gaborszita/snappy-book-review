@@ -14,8 +14,9 @@ export interface IUser extends Document {
   email: string,
   password: string,
   accountState: AccountState,
-  emailVerificationLink: string,
-  passwordResetLink: string
+  emailVerificationHash: string,
+  passwordResetLink: string,
+  emailVerificationExpire: Date
 }
 
 const UserSchema = new Schema<IUser>({
@@ -28,8 +29,9 @@ const UserSchema = new Schema<IUser>({
     enum: Object.values(AccountState).filter(val => typeof val === 'number'),
     required: true
   },
-  emailVerificationLink: { type: String, required: true },
-  passwordResetLink: { type: String, required: true }
+  emailVerificationHash: { type: String },
+  passwordResetLink: { type: String, required: true },
+  emailVerificationExpire: { type: Date, expires: '24h', default: new Date() }
 });
 
 // full name virtual

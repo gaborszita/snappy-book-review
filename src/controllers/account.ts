@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { User, AccountState, IUser } from '../models/User';
-import { body, validationResult } from 'express-validator';
+import { body, check, validationResult } from 'express-validator';
 import passport from 'passport';
+import { default as nodemailer } from 'nodemailer';
+import { default as crypto } from 'crypto';
 
 // log in page
 export const logIn = (req: Request, res: Response): void => {
@@ -43,25 +45,48 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     return;
   }
 
-  const user = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-    accountState: AccountState.Active,
-    emailVerificationLink: 'none',
-    passwordResetLink: 'none'
-  });
-
-  User.findOne({ email: req.body.email }, function (err, existingUser) {
+  User.findOne({ email: req.body.email }, async function (err, existingUser) {
     if (err) { return next(err) }
     if (existingUser) {
       res.status(400).send('An account with this email address already exists');
       return;
     }
+    const transporter = nodemailer.createTransport(req.app.locals.config.smtpConnectionUrl);
+
+    const hash = crypto.randomBytes(20).toString('hex');
+    const link = req.app.locals.config.siteUrl + '/account/verify-account/submit/?email=' + 
+      encodeURIComponent(req.body.email) + '&hash=' + encodeURIComponent(hash);
+
+    const user = new User({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password,
+      accountState: AccountState.PendingActivation,
+      emailVerificationHash: hash,
+      passwordResetLink: 'none'
+    });
+    
+    const body = 'Hello ' + user.firstName + '!\r\n\r\n' + 
+                  'Thank you registering at Snappy Book Review!\r\n\r\n' + 
+                  'This is your email verification link:\r\n' + link 
+
+    try {
+      await transporter.sendMail({
+        from: req.app.locals.config.emailFrom,
+        to: user.email,
+        subject: "Snappy Book Review email verification",
+        text: body,
+      });
+    } catch (err) {
+      return next(new Error('Failed to send verification email', { cause: err }));
+    }
     user.save((err) => {
       if (err) { return next(err); }
-      res.send('Account created');
+      
+      
+      res.send('We sent you a verification link to your email address. ' + 
+        'The link is valid for 24 hours.');
     });
   });
 };
@@ -136,3 +161,36 @@ export const accountSettingsSubmit = async (req: Request, res: Response, next: N
     });
   }
 }
+
+// account verificaiton submit
+export const accountVerificationSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  await check('email').isEmail().run(req);
+  await check('hash').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const errorMsg = 'Invalid link. Try re-creating your account, as the ' + 
+                   'link may have expired (it is valid for 24 hours).';
+
+  User.findOne({ email: req.query.email }, function (err, user) {
+    if (err) { return next(err) }
+    if (!user || user.accountState == AccountState.Active 
+      || user.emailVerificationHash !== req.query.hash) {
+      res.status(400).render('account/verify-account', { responseText: errorMsg });
+      return;
+    }
+    user.accountState = AccountState.Active;
+    user.emailVerificationHash = undefined;
+    user.emailVerificationExpire = undefined;
+    user.save((err) => {
+      if (err) { return next(err); }
+      res.render('account/verify-account', { responseText: 
+        'Email verified successfully! You may now log in.' });
+    });
+  });
+};

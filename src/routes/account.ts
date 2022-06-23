@@ -23,3 +23,6 @@ router.get('/account-settings/', account.accountSettings);
 
 // POST request for account settings submit
 router.post('/account-settings/submit/', account.accountSettingsSubmit);
+
+// GET request for account verification submit
+router.get('/verify-account/submit/', account.accountVerificationSubmit);
