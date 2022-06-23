@@ -7,14 +7,18 @@ export interface IConfig extends Document {
   sessionSecret: string,
   sessionMaxAge: number,
   sessionCookie: string,
-  loggedInCookie: string
+  loggedInCookie: string,
+  smtpConnectionUrl: string,
+  emailFrom: string
 }
 
 const ConfigSchema = new Schema<IConfig>({
   sitePreferredProtocol: { type: String, requiured: true },
   siteAddress: { type: String, required: true },
   sessionSecret: { type: String, required: true },
-  sessionMaxAge: { type: Number, required: true }
+  sessionMaxAge: { type: Number, required: true },
+  smtpConnectionUrl: { type: String, required: true },
+  emailFrom: { type: String, required: true }
 }, {
   capped: { size: 1024, max: 1 }
 });
