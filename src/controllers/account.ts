@@ -92,9 +92,11 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
 };
 
 // log out submit
-export const logOutSubmit = function (req: Request, res: Response): void {
-  req.logout();
-  res.send('OK');
+export const logOutSubmit = function (req: Request, res: Response, next: NextFunction): void {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    res.send('OK');
+  });
 };
 
 // account settings page
