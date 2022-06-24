@@ -69,7 +69,7 @@ export const createAccountSubmit = async (req: Request, res: Response, next: Nex
     
     const body = 'Hello ' + user.firstName + '!\r\n\r\n' + 
                   'Thank you registering at Snappy Book Review!\r\n\r\n' + 
-                  'This is your email verification link:\r\n' + link 
+                  'This is your email verification link:\r\n' + link;
 
     try {
       await transporter.sendMail({
