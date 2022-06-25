@@ -102,6 +102,9 @@ export const logOutSubmit = function (req: Request, res: Response, next: NextFun
 
 // account settings page
 export const accountSettings = (req: Request, res: Response): void => {
+  if (!req.isAuthenticated()) {
+    return res.redirect(req.app.locals.config.siteUrl + '/account/log-in/');
+  }
   res.render('account/account-settings');
 };
 
