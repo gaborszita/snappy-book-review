@@ -89,7 +89,7 @@ function passwordSubmit(infobox) {
     return;
   }
   const verifyPassword = document.getElementById('verify_password_input').value;
-  if (password != verifyPassword) {
+  if (password !== verifyPassword) {
     Common.CommonUI.errorMessage(infobox, 'Passwords do not match.');
     return;
   }
