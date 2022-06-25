@@ -4,6 +4,7 @@ import { body, check, validationResult } from 'express-validator';
 import passport from 'passport';
 import { default as nodemailer } from 'nodemailer';
 import { default as crypto } from 'crypto';
+import { PasswordReset } from '../models/PasswordReset';
 
 // log in page
 export const logIn = (req: Request, res: Response): void => {
@@ -193,6 +194,124 @@ export const accountVerificationSubmit = async (req: Request, res: Response, nex
       if (err) { return next(err); }
       res.render('account/verify-account', { responseText: 
         'Email verified successfully! You may now log in.' });
+    });
+  });
+};
+
+// reset password page
+export const resetPassword = (req: Request, res: Response): void => {
+  res.render('account/reset-password');
+};
+
+// reset password submit
+export const resetPasswordSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  await body('email').isEmail().run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const message = 'If an account with the email address you provided ' + 
+                  'exists, we have sent you a reset password link. ' + 
+                  'The link is valid for 24 hours.';
+
+  User.findOne({ email: req.body.email, accountState: AccountState.Active }, 
+    async function(err, user) {
+    if (err) { return next(err) }
+    if (!user) {
+      res.send(message);
+      return;
+    }
+
+    const hash = crypto.randomBytes(20).toString('hex');
+    const link = req.app.locals.config.siteUrl + '/account/' + 
+      'reset-password-reset/?email=' + 
+      encodeURIComponent(req.body.email) + '&hash=' + encodeURIComponent(hash);
+    
+    const body = 'Hello ' + user.firstName + '!\r\n\r\n' + 
+                 'Please click on the following link to reset your ' + 
+                 'password:\r\n' + link;
+
+    const transporter = nodemailer.createTransport(req.app.locals.config.smtpConnectionUrl);
+
+    try {
+      await transporter.sendMail({
+        from: req.app.locals.config.emailFrom,
+        to: user.email,
+        subject: "Snappy Book Review password reset",
+        text: body,
+      });
+    } catch (err) {
+      return next(new Error('Failed to send password reset email', { cause: err }));
+    }
+
+    PasswordReset.findOne({ user: user }, function(err, passwordResetDoc) {
+      if (err) { return next(err); }
+      let passwordReset;
+      if (passwordResetDoc) {
+        passwordReset = passwordResetDoc;
+      } else {
+        passwordReset = new PasswordReset({
+          user: user,
+          hash: hash
+        });
+      }
+      passwordReset.save((err) => {
+        if (err) { return next(err); }
+        res.send(message);
+      });
+    });
+  });
+};
+
+// reset password reset page
+export const resetPasswordReset = (req: Request, res: Response): void => {
+  res.render('account/reset-password-reset');
+};
+
+// reset password reset submit
+export const resetPasswordResetSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  await body('email').isEmail().run(req);
+  await body('password').isLength({ min: 8, max: 20 })
+    .custom((value: string) => /\d/.test(value))
+    .custom((value: string) => /[a-zA-Z]/.test(value)).run(req);
+  await body('hash').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const errorMessage = 'Failed to reset password. Try requesting a reset ' + 
+                       'password link again, as the link may have already ' + 
+                       'expired (it is valid for 24 hours).'
+
+  User.findOne({ email: req.body.email, accountState: AccountState.Active }, 
+    function(err, user) {
+    if (err) return ( next(err) );
+    if (!user) {
+      res.status(400).send(errorMessage);
+      return;
+    }
+    PasswordReset.findOne({ user: user }, function(err, passwordReset) {
+      if (err) return ( next(err) );
+      if (!passwordReset || req.body.hash !== passwordReset.hash) {
+        res.status(400).send(errorMessage);
+        return;
+      }
+      passwordReset.delete((err) => {
+        if (err) { next(err); }
+        user.password = req.body.password;
+        user.save((err) => {
+          if (err) { next(err); }
+          res.send('Password has been reset successfully! You may now log in.');
+        });
+      });
     });
   });
 };

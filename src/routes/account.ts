@@ -26,3 +26,15 @@ router.post('/account-settings/submit/', account.accountSettingsSubmit);
 
 // GET request for account verification submit
 router.get('/verify-account/submit/', account.accountVerificationSubmit);
+
+// GET request for reset password page
+router.get('/reset-password/', account.resetPassword);
+
+// POST request for reset password submit
+router.post('/reset-password/submit/', account.resetPasswordSubmit);
+
+// GET request for reset password reset page
+router.get('/reset-password-reset/', account.resetPasswordReset);
+
+// POST request for reset password reset submit
+router.post('/reset-password-reset/submit/', account.resetPasswordResetSubmit);
