@@ -4,6 +4,7 @@ import readline from 'readline';
 import mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
 import { Config } from './src/models/Config';
+import { default as crypto } from 'crypto';
 
 // used for getting user input
 const r1 = readline.createInterface({
@@ -29,8 +30,7 @@ async function setup() {
     mongoUrl = await ask('Please enter the MongoDB connection URL: ');
     console.log('Attempting to connect...');
     try {
-      await mongoose.connect(mongoUrl, { useNewUrlParser: true, 
-        useCreateIndex: true, useUnifiedTopology: true } );
+      await mongoose.connect(mongoUrl);
       connectionOK = true;
       console.log('Connection successful!');
     } catch (err) {
@@ -50,20 +50,24 @@ async function setup() {
     'localhost, localhost:3000, example.com): ');
   const sessionMaxAge = await ask('Please enter the maximum session length ' + 
     'in milliseconds (e.g. 60000 for 1 minutes): ');
+  const smtpConnectionUrl = await ask('Please enter the SMTP connection ' + 
+    'URL (for nodemailer): ');
+  const emailFrom = await ask('Please enter the email address from which ' + 
+    'the app will send emails in the format ' + 
+    '\'"Firstname Lastname" <no-reply@example.com>\': ');
 
   // session secret
   console.log('Generating session secret...');
-  let sessionSecret = '';
-  for (let i=0; i<3; i++) {
-    sessionSecret += Math.random().toString(36).substring(2, 15);
-  }
+  const sessionSecret = crypto.randomBytes(64).toString('hex');
   console.log('Done');
 
   const config = {
     sitePreferredProtocol: sitePreferredProtocol,
     siteAddress: siteAddress,
     sessionSecret: sessionSecret,
-    sessionMaxAge: sessionMaxAge
+    sessionMaxAge: sessionMaxAge,
+    smtpConnectionUrl: smtpConnectionUrl,
+    emailFrom: emailFrom
   }
 
   // ask user to confirm if the script can write the config data to the 
