@@ -248,21 +248,10 @@ export const resetPasswordSubmit = async (req: Request, res: Response, next: Nex
       return next(new Error('Failed to send password reset email', { cause: err }));
     }
 
-    PasswordReset.findOne({ user: user }, function(err, passwordResetDoc) {
+    PasswordReset.updateOne({ user: user }, { hash: hash }, { upsert: true }, 
+      (err) => {
       if (err) { return next(err); }
-      let passwordReset;
-      if (passwordResetDoc) {
-        passwordReset = passwordResetDoc;
-      } else {
-        passwordReset = new PasswordReset({
-          user: user,
-          hash: hash
-        });
-      }
-      passwordReset.save((err) => {
-        if (err) { return next(err); }
-        res.send(message);
-      });
+      res.send(message);
     });
   });
 };
