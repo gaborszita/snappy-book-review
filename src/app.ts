@@ -99,6 +99,12 @@ export async function appInit(): Promise<express.Express> {
   // Serve static files
   app.use(express.static(path.join(__dirname, './public')));
 
+  // cache policy
+  app.use(function (req, res, next) {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
+
   // routes
   app.use('/', mainPagesRouter);
   app.use('/account/', accountRouter);
