@@ -12,4 +12,4 @@ const passowrdResetSchema = new Schema<IPasswordReset>({
   passwordResetExpire: { type: Date, expires: '24h', default: new Date() }
 });
 
-export const PasswordReset = mongoose.model<IPasswordReset>('password-reset', passowrdResetSchema);
+export const PasswordReset = mongoose.model<IPasswordReset>('password_reset', passowrdResetSchema);
