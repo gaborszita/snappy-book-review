@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import onHeaders from 'on-headers';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import minify from 'express-minify';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
 
@@ -44,6 +46,11 @@ export async function appInit(): Promise<express.Express> {
 
   // config
   app.locals.config = configData;
+
+  if (process.env.NODE_ENV !== 'development') {
+    app.use(compression());
+    app.use(minify());
+  }
 
   // redirect no trailing slash to trailing slash
   app.use(function (req, res, next) {
