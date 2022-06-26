@@ -5,6 +5,7 @@ import passport from 'passport';
 import { default as nodemailer } from 'nodemailer';
 import { default as crypto } from 'crypto';
 import { PasswordReset } from '../models/PasswordReset';
+import { ChangeEmail } from '..//models/ChangeEmail';
 
 // log in page
 export const logIn = (req: Request, res: Response): void => {
@@ -146,7 +147,6 @@ export const accountSettingsSubmit = async (req: Request, res: Response, next: N
       res.send('Name changed successfully!');
     });
   } else if (req.body.setting === 'email') {
-    user.email = req.body.email;
     // check if email is already in use
     User.findOne({ email: req.body.email }, function (err, existingUser) {
       if (err) { return next(err) }
@@ -154,9 +154,38 @@ export const accountSettingsSubmit = async (req: Request, res: Response, next: N
         res.status(400).send('An account with this email address already exists');
         return;
       }
-      user.save((err) => {
+
+      // send email verification link
+      const transporter = nodemailer.createTransport(req.app.locals.config.smtpConnectionUrl);
+
+      const hash = crypto.randomBytes(20).toString('hex');
+      const link = req.app.locals.config.siteUrl + '/account/' + 
+        'verify-email-change/submit/?email=' +
+        encodeURIComponent(user.email) + '&hash=' + 
+        encodeURIComponent(hash);
+        
+      const body = 'Hello ' + user.firstName + '!\r\n\r\n' +
+        'Please click on the following link to verify your email address ' + 
+        'change:\r\n' + link;
+
+      try {
+        transporter.sendMail({
+          from: req.app.locals.config.emailFrom,
+          to: req.body.email,
+          subject: "Snappy Book Review email change verification",
+          text: body,
+        });
+      } catch (err) {
+        return next(new Error('Failed to send email change verification ' + 
+          'email', { cause: err }));
+      }
+
+      ChangeEmail.updateOne({ user: user.id }, 
+        { hash: hash, email: req.body.email }, 
+        { upsert: true }, (err) => {
         if (err) { return next(err); }
-        res.send('Email changed successfully!');
+        res.send('We sent you a verification link to your email address. ' + 
+          'The link is valid for 24 hours.');
       });
     });
   } else if (req.body.setting === 'password') {
@@ -167,6 +196,60 @@ export const accountSettingsSubmit = async (req: Request, res: Response, next: N
     });
   }
 }
+
+// email change verification submit
+export const emailChangeVerificationSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  await check('email').isEmail().run(req);
+  await check('hash').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const errorMessage = 'Failed to change email address. Try requesting a ' + 
+                       'change email link again, as the link may have ' + 
+                       'already expired (it is valid for 24 hours).';
+
+  User.findOne({ email: req.query.email, accountState: AccountState.Active }, 
+    function(err, user) {
+    if (err) { return next(err); }
+    if (!user) {
+      res.render('account/verify-email-change', { success: false, 
+        responseText: errorMessage });
+      return;
+    }
+    ChangeEmail.findOne({ user: user }, function(err, changeEmail) {
+      if (err) { return next(err); }
+      if (!changeEmail || changeEmail.hash !== req.query.hash) {
+        res.render('account/verify-email-change', { success: false, 
+          responseText: errorMessage });
+        return;
+      }
+
+      User.findOne({ email: changeEmail.email }, function(err, existingUser) {
+        if (err) { return next(err); }
+        if (existingUser) {
+          res.render('account/verify-email-change', { success: false, 
+            responseText: errorMessage });
+          return;
+        }
+        changeEmail.delete((err) => {
+          if (err) { return next(err); }
+          user.email = changeEmail.email;
+          user.save((err) => {
+            if (err) { return next(err); }
+            res.render('account/verify-email-change', { success: true, 
+              responseText: 'Email changed successfully!' });
+          });
+        });
+      });
+    });
+  });
+};
+
 
 // account verificaiton submit
 export const accountVerificationSubmit = async (req: Request, res: Response, next: NextFunction) => {

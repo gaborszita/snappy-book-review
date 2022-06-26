@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include ('../../includes/head') %>
+    <title>Page title</title>
+    <title>Account Verification - Snappy Book Review</title>
+  </head>
+  <body>
+    <%- include('../../includes/header') %>
+    <div class="sbr-maincontainer">
+      <h1>Email change verification</h1>
+      <% if (success) { %>
+        <p><%= responseText %></p>
+      <% } else { %>
+        <div class="sbr-error-message" role="alert"><p><%= responseText %></p></div>
+      <% } %>
+    </div>
+    <%- include('../../includes/footer') %>
+  </body>
+</html>
