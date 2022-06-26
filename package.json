@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "A little book website written in TypeScript.",
   "main": "dist/server.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "setup": "ts-node setup.ts",
     "clean": "rimraf dist/*",
