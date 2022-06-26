@@ -150,7 +150,10 @@ export const accountSettingsSubmit = async (req: Request, res: Response, next: N
     // check if email is already in use
     User.findOne({ email: req.body.email }, function (err, existingUser) {
       if (err) { return next(err) }
-      if (existingUser && existingUser.id !== user.id) {
+      if (existingUser && existingUser.id === user.id) {
+        res.send("That's your current email address.");
+        return;
+      } else if (existingUser) {
         res.status(400).send('An account with this email address already exists');
         return;
       }
