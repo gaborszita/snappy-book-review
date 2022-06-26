@@ -224,16 +224,16 @@ export const emailChangeVerificationSubmit = async (req: Request, res: Response,
     ChangeEmail.findOne({ user: user }, function(err, changeEmail) {
       if (err) { return next(err); }
       if (!changeEmail || changeEmail.hash !== req.query.hash) {
-        res.render('account/verify-email-change', { success: false, 
-          responseText: errorMessage });
+        res.status(400).render('account/verify-email-change', 
+          { success: false, responseText: errorMessage });
         return;
       }
 
       User.findOne({ email: changeEmail.email }, function(err, existingUser) {
         if (err) { return next(err); }
         if (existingUser) {
-          res.render('account/verify-email-change', { success: false, 
-            responseText: errorMessage });
+          res.status(400).render('account/verify-email-change', 
+            { success: false, responseText: errorMessage });
           return;
         }
         changeEmail.delete((err) => {
