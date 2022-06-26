@@ -2,12 +2,12 @@
 
 export class CommonUI {
   static errorMessage(infobox, message) {
-    infobox.innerHTML = '<div class="sbr-error-message" role="alert"> '
+    infobox.innerHTML = '<div class="sbr-error-message" role="alert">'
     + message + 
     '</div>';
   }
   static successMessage(infobox, message) {
-    infobox.innerHTML = '<div class="sbr-success-message" role="alert"> '
+    infobox.innerHTML = '<div class="sbr-success-message" role="alert">'
     + message + 
     '</div>';
   }
