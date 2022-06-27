@@ -119,7 +119,7 @@ function(event) {
   nameSubmit(document.getElementById('name_form_submit_info'));
 });
 
-document.getElementById('email_setting').addEventListener('submit', 
+document.getElementById('email_setting').addEventListener('submit',
 function(event) {
   event.preventDefault();
   emailSubmit(document.getElementById('email_form_submit_info'));

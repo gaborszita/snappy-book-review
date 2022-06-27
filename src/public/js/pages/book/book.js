@@ -86,7 +86,7 @@ document.getElementById('review_form').addEventListener('submit', function(event
 
 if (document.getElementById('delete_review') != null) {
   document.getElementById('delete_review').addEventListener('click', function(event) {
-    deleteReview(document.getElementById('user_review'), 
+    deleteReview(document.getElementById('user_review'),
       document.getElementById('review_delete_error_info'));
   });
 }

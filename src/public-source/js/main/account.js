@@ -18,7 +18,7 @@ export class Account {
   }
 }
 
-document.getElementById('logout_button').addEventListener('click', 
+document.getElementById('logout_button').addEventListener('click',
   function () {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {

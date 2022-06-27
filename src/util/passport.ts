@@ -9,7 +9,7 @@ const LocalStrategy = passportLocal.Strategy;
 // email and password authentication
 passport.use(new LocalStrategy ( { usernameField: 'email' },
   function(email, password, done) {
-    User.findOne({ email: email, accountState: AccountState.Active }, 
+    User.findOne({ email: email, accountState: AccountState.Active },
       function(err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
@@ -35,7 +35,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-export function syncSessionCookieToLoggedInCookie(req: Request, res: Response, 
+export function syncSessionCookieToLoggedInCookie(req: Request, res: Response,
   sessionCookieName: string, loggedInCookieName: string): void {
   if (req.isAuthenticated()) {
     const responseCookies = setCookie.parse(res.get('Set-Cookie'), {});
@@ -53,7 +53,7 @@ export function syncSessionCookieToLoggedInCookie(req: Request, res: Response,
       }
     }
     if (!found) {
-      console.warn('WARNING: User appears to be logged in, but couldn\'t ' + 
+      console.warn('WARNING: User appears to be logged in, but couldn\'t ' +
         'get session cookie and couldn\'t set logged in cookie.');
     }
   } else {

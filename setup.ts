@@ -42,18 +42,18 @@ async function setup() {
       }
     }
   } while (!connectionOK)
-  
+
   // get the site preferred protocol and the address
-  const sitePreferredProtocol = await ask('Please enter the preferred ' + 
+  const sitePreferredProtocol = await ask('Please enter the preferred ' +
     'protocol of your site (most likely http or https): ');
-  const siteAddress = await ask('Please enter your site address (e.g. ' + 
+  const siteAddress = await ask('Please enter your site address (e.g. ' +
     'localhost, localhost:3000, example.com): ');
-  const sessionMaxAge = await ask('Please enter the maximum session length ' + 
+  const sessionMaxAge = await ask('Please enter the maximum session length ' +
     'in milliseconds (e.g. 60000 for 1 minutes): ');
-  const smtpConnectionUrl = await ask('Please enter the SMTP connection ' + 
+  const smtpConnectionUrl = await ask('Please enter the SMTP connection ' +
     'URL (for nodemailer): ');
-  const emailFrom = await ask('Please enter the email address from which ' + 
-    'the app will send emails in the format ' + 
+  const emailFrom = await ask('Please enter the email address from which ' +
+    'the app will send emails in the format ' +
     '\'"Firstname Lastname" <no-reply@example.com>\': ');
 
   // session secret
@@ -70,7 +70,7 @@ async function setup() {
     emailFrom: emailFrom
   }
 
-  // ask user to confirm if the script can write the config data to the 
+  // ask user to confirm if the script can write the config data to the
   // database
   let answerValid: boolean;
   do {
@@ -90,7 +90,7 @@ async function setup() {
           throw err;
         }
       }
-    
+
       r1.close();
       return;
       answerValid = true;
@@ -118,7 +118,7 @@ async function setup() {
           throw err;
         }
       }
-    
+
       r1.close();
       return;
     } else {
@@ -142,8 +142,8 @@ async function setup() {
   r1.close();
 
   // instruct user to set some environment variables
-  console.log('Please set the following environment variables in your ' + 
-    'application (For simplicity, you can just create a .env file in the ' + 
+  console.log('Please set the following environment variables in your ' +
+    'application (For simplicity, you can just create a .env file in the ' +
     'project root and paste it in there): ');
   console.log();
 
@@ -152,7 +152,7 @@ async function setup() {
   // the mongodb connection url
   console.log('MONGODB_URI=' + mongoUrl);
 
-  // no more environment variables are needed as all config is stored in the 
+  // no more environment variables are needed as all config is stored in the
   // database
 
   console.log();

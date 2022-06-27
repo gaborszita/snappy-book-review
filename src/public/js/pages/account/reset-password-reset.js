@@ -21,7 +21,7 @@ function formSubmit(infobox) {
   const email = params.get('email');
   const hash = params.get('hash');
 
-  if (email == null || email === '' 
+  if (email == null || email === ''
     || hash == null || hash === '') {
     Common.CommonUI.errorMessage(infobox, 'Invalid URL');
   }

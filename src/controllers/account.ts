@@ -147,7 +147,7 @@ export const accountSettingsSubmit = async (req: Request, res: Response) => {
       res.send("That's your current email address.");
       return;
     } else if (existingUser) {
-      res.status(400).send('An account with this email address already' + 
+      res.status(400).send('An account with this email address already' +
           'exists');
       return;
     }
@@ -238,7 +238,7 @@ export const emailChangeVerificationSubmit = async (req: Request,
   user.email = changeEmail.email;
   await user.save();
   res.render('account/verify-email-change', {
-    success: true, 
+    success: true,
     responseText: 'Email changed successfully!'
   });
 };
@@ -257,7 +257,7 @@ export const accountVerificationSubmit = async (req: Request,
     return;
   }
 
-  const errorMsg = 'Invalid link. Try re-creating your account, as the ' + 
+  const errorMsg = 'Invalid link. Try re-creating your account, as the ' +
       'link may have expired (it is valid for 24 hours).';
 
   const user = await User.findOne({ email: req.query.email });
@@ -294,8 +294,8 @@ export const resetPasswordSubmit = async (req: Request, res: Response) => {
     return;
   }
 
-  const message = 'If an account with the email address you provided ' + 
-      'exists, we have sent you a reset password link. ' + 
+  const message = 'If an account with the email address you provided ' +
+      'exists, we have sent you a reset password link. ' +
       'The link is valid for 24 hours.';
 
   const user = await User.findOne({ email: req.body.email });
@@ -309,11 +309,11 @@ export const resetPasswordSubmit = async (req: Request, res: Response) => {
   await PasswordReset.updateOne({ user: user }, { hash: hash },
                                 { upsert: true });
 
-  const link = req.app.locals.config.siteUrl + '/account/' + 
-      'reset-password-reset/?email=' + encodeURIComponent(req.body.email) + 
+  const link = req.app.locals.config.siteUrl + '/account/' +
+      'reset-password-reset/?email=' + encodeURIComponent(req.body.email) +
       '&hash=' + hash;
-  const emailBody = 'Hello ' + user.firstName + '!\r\n\r\n' + 
-      'Please click on the following link to reset your ' + 
+  const emailBody = 'Hello ' + user.firstName + '!\r\n\r\n' +
+      'Please click on the following link to reset your ' +
       'password:\r\n' + link;
 
   const transporter = nodemailer.createTransport(
@@ -349,8 +349,8 @@ export const resetPasswordResetSubmit = async (req: Request,
     return;
   }
 
-  const errorMessage = 'Failed to reset password. Try requesting a reset ' + 
-      'password link again, as the link may have already ' + 
+  const errorMessage = 'Failed to reset password. Try requesting a reset ' +
+      'password link again, as the link may have already ' +
       'expired (it is valid for 24 hours).';
 
   const user = await User.findOne({

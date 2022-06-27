@@ -28,14 +28,14 @@ export async function appInit(): Promise<express.Express> {
     ).catch(error => {
       console.error('ERROR: Failed to connect to  MongoDB.');
       console.error(error);
-      console.error('Application is now in an unstable state, please resolve ' + 
+      console.error('Application is now in an unstable state, please resolve ' +
         'issue!');
     });
 
   const configData = await config().catch(error => {
     console.error('ERROR: Failed to get config.');
     console.error(error);
-    console.error('Please check if MongoDB was able to connect and that ' + 
+    console.error('Please check if MongoDB was able to connect and that ' +
       'you set up application correctly!');
     console.error('Application cannot continue without config data, exiting.');
     throw new Error('Failed to get config');
@@ -66,13 +66,13 @@ export async function appInit(): Promise<express.Express> {
   app.use(express.json()); // for parsing application/json
   app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  // Need to use the on-headers library to access the session cookie, because 
-  // express-session also uses this library to set the session cookie just 
-  // before sending the response. on-headers executes the listeners in reverse 
-  // order, so the syncSessionCookieToLoggedInCookie function's onHeaders 
+  // Need to use the on-headers library to access the session cookie, because
+  // express-session also uses this library to set the session cookie just
+  // before sending the response. on-headers executes the listeners in reverse
+  // order, so the syncSessionCookieToLoggedInCookie function's onHeaders
   // listener middleware has to come before the express-session middleware.
   app.use(function(req, res, next) {
-    onHeaders(res, () => syncSessionCookieToLoggedInCookie(req, res, 
+    onHeaders(res, () => syncSessionCookieToLoggedInCookie(req, res,
       configData.sessionCookie, configData.loggedInCookie));
     next();
   });
@@ -126,8 +126,8 @@ export async function appInit(): Promise<express.Express> {
   if (process.env.NODE_ENV === 'development') {
     app.use(errorHandler());
   } else {
-    // need to disable eslint no-unused-vars cause otherwise it will complain 
-    // that next is an unused parameter - but is is needed because express only 
+    // need to disable eslint no-unused-vars cause otherwise it will complain
+    // that next is an unused parameter - but is is needed because express only
     // uses this function to handle parameters if there are 4 parameters
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     app.use(function (err: unknown, req: Request, res: Response, next: NextFunction) {

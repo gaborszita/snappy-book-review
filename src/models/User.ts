@@ -24,7 +24,7 @@ const UserSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  accountState: { 
+  accountState: {
     type: Number,
     enum: Object.values(AccountState).filter(val => typeof val === 'number'),
     required: true
@@ -61,7 +61,7 @@ UserSchema.pre('save', function(next) {
   });
 });
 
-UserSchema.methods.verifyPassword = function(password: string, 
+UserSchema.methods.verifyPassword = function(password: string,
   cb: (err: Error, match: boolean) => void) {
   bcrypt.compare(password, this.password, function(err, match) {
     cb(err, match);

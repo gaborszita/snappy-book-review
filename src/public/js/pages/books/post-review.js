@@ -39,7 +39,7 @@ function formSubmit(infobox) {
     Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
     return;
   }
-  
+
   let checkedStar;
   if (document.getElementById('rating_1').checked) {
     checkedStar = 1;

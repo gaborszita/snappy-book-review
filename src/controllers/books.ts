@@ -28,7 +28,7 @@ export const search = async (req: Request, res: Response) => {
   const filter = {
     $or: [
       {author: { $in: regexps }},
-      {title: { $in: regexps }} 
+      {title: { $in: regexps }}
     ]
   };
   const books = await Book.find(filter, null, { limit: 10 });
@@ -77,7 +77,7 @@ export const book = async (req: Request, res: Response,
       comment: reviews[i].comment
     };
     if (req.isAuthenticated() && users[i].id === currentUser.id) {
-      // store review of user in a different variable as it will be 
+      // store review of user in a different variable as it will be
       // displayed separately from other reviews
       userReview = review;
     } else {
@@ -120,7 +120,7 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
     res.status(400).send('Invalid data');
     return;
   }
-  
+
   const isbn = req.body.isbn;
   const rating = req.body.rating;
   let comment = req.body.comment;
@@ -230,13 +230,13 @@ export const isbnValidator = async (req: Request, res: Response) => {
 };
 
 /**
- * Checks if an ISBN is valid. If yes, it returns the following JSON object: 
- * {author, title, isbn}. It returns the ISBN, because it attempts to use 
- * ISBN-13 as the preferred method of storing books in the db. Otherwise, it 
+ * Checks if an ISBN is valid. If yes, it returns the following JSON object:
+ * {author, title, isbn}. It returns the ISBN, because it attempts to use
+ * ISBN-13 as the preferred method of storing books in the db. Otherwise, it
  * returns null.
  * @param isbn Book isbn
  */
-async function checkIsbn(isbn: string): 
+async function checkIsbn(isbn: string):
     Promise<{ author: string, title: string, isbn: string } | null> {
   if (!/^\d+$/.test(isbn)) {
     return null;
@@ -251,12 +251,12 @@ async function checkIsbn(isbn: string):
           reject(new Error('Google book API status code ' +
                            isbnRes.statusCode));
         }
-    
+
         let data = '';
         isbnRes.on('data', (chunk) => {
             data = data + chunk.toString();
         });
-    
+
         isbnRes.on('end', () => {
           resolve(data);
         });
@@ -277,13 +277,13 @@ async function checkIsbn(isbn: string):
     throw new Error(badFormatErrMsg);
   }
   if (body.totalItems>0) {
-    if (!Array.isArray(body.items) || body.items.length<1 || 
-        body.items[0].volumeInfo == null || 
-        body.items[0].volumeInfo.authors == null || 
-        !Array.isArray(body.items[0].volumeInfo.authors) || 
-        !body.items[0].volumeInfo.authors.every(elem => (typeof elem === 
-        'string')) || 
-        body.items[0].volumeInfo.industryIdentifiers == null || 
+    if (!Array.isArray(body.items) || body.items.length<1 ||
+        body.items[0].volumeInfo == null ||
+        body.items[0].volumeInfo.authors == null ||
+        !Array.isArray(body.items[0].volumeInfo.authors) ||
+        !body.items[0].volumeInfo.authors.every(elem => (typeof elem ===
+        'string')) ||
+        body.items[0].volumeInfo.industryIdentifiers == null ||
         !Array.isArray(body.items[0].volumeInfo.industryIdentifiers)) {
       throw new Error(badFormatErrMsg);
     }
@@ -297,7 +297,7 @@ async function checkIsbn(isbn: string):
     }
 
     // Use ISBN-13 if possible
-    const industryIdentifiers = 
+    const industryIdentifiers =
         body.items[0].volumeInfo.industryIdentifiers;
     let isbn10, isbn13;
     for (const identifier of industryIdentifiers) {
@@ -322,7 +322,7 @@ async function checkIsbn(isbn: string):
     } else {
       retIsbn = isbn;
     }
-    
+
     const title = body.items[0].volumeInfo.title;
     return {
       author: authorsStr,
