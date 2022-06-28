@@ -329,7 +329,17 @@ export const resetPasswordSubmit = async (req: Request, res: Response) => {
 };
 
 // reset password reset page
-export const resetPasswordReset = (req: Request, res: Response): void => {
+export const resetPasswordReset = async (req: Request, res: Response) => {
+  await check('email').isEmail().run(req);
+  await check('hash').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
   res.render('account/reset-password-reset');
 };
 
