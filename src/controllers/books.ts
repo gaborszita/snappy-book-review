@@ -106,7 +106,7 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
     return;
   }
 
-  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+  await check('isbn').isISBN().run(req);
   await check('rating').isInt({ min: 1, max: 5 }).run(req);
   await check('comment').custom(value => {
     if (value != null && typeof value !== 'string') {
@@ -208,7 +208,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response) => {
 
 // isbn validator
 export const isbnValidator = async (req: Request, res: Response) => {
-  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+  await check('isbn').isISBN().run(req);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -238,10 +238,6 @@ export const isbnValidator = async (req: Request, res: Response) => {
  */
 async function checkIsbn(isbn: string):
     Promise<{ author: string, title: string, isbn: string } | null> {
-  if (!/^\d+$/.test(isbn)) {
-    return null;
-  }
-
   const url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn;
 
   const data = await ((): Promise<string> => {
