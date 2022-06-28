@@ -74,7 +74,8 @@ async function setup() {
   // database
   let answerValid: boolean;
   do {
-    const answer = await ask('Confirm to write config data to database [y/n]: ');
+    const answer = await ask('Confirm to write config data to database ' +
+                             '[y/n]: ');
     const answerLowerCase = answer.toLowerCase();
     if (answerLowerCase === 'y' || answerLowerCase === 'yes') {
       answerValid = true;

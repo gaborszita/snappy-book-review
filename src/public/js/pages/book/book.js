@@ -72,20 +72,23 @@ function deleteReview(ratingBox, errorInfoBox) {
   xhttp.send(JSON.stringify(data));
 }
 
-document.getElementById('review_form_container').addEventListener('show.bs.collapse', function() {
+document.getElementById('review_form_container').addEventListener(
+    'show.bs.collapse', function() {
   if (!Common.Account.checkLogin()) {
     window.location.href = config.siteUrl + '/account/log-in/';
     return;
   }
 });
 
-document.getElementById('review_form').addEventListener('submit', function(event) {
+document.getElementById('review_form').addEventListener('submit',
+                                                        function(event) {
   event.preventDefault();
   formSubmit(document.getElementById('form_submit_info'));
 });
 
 if (document.getElementById('delete_review') != null) {
-  document.getElementById('delete_review').addEventListener('click', function(event) {
+  document.getElementById('delete_review').addEventListener('click',
+                                                            function() {
     deleteReview(document.getElementById('user_review'),
       document.getElementById('review_delete_error_info'));
   });

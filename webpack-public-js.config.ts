@@ -7,7 +7,8 @@ import { config } from './src/util/config';
 import glob from 'glob';
 
 export default async () => {
-  const mode = process.env.NODE_ENV==='development' ? 'development' : 'production';
+  const mode = process.env.NODE_ENV==='development' ? 'development' :
+      'production';
   const outputPath = path.resolve(__dirname, 'dist/public/js');
   const stats = 'errors-warnings';
 

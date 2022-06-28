@@ -36,7 +36,8 @@ function nameSubmit(infobox) {
       Common.CommonUI.errorMessage(infobox, this.responseText);
     }
   };
-  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/', true);
+  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/',
+             true);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   const data = {
     setting: 'name',
@@ -47,9 +48,13 @@ function nameSubmit(infobox) {
 }
 
 function emailSubmit(infobox) {
-  const emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const emailRegex = new RegExp([
+    '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|',
+    '(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|',
+    '(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
+  ].join(''));
   const email = document.getElementById('email_input').value;
-  if (!email.match(emailregex) || email.length > 254) {
+  if (!email.match(emailRegex) || email.length > 254) {
     if (email.length > 0) {
       Common.CommonUI.errorMessage(infobox, 'Email address invalid.');
     } else {
@@ -68,7 +73,8 @@ function emailSubmit(infobox) {
       Common.CommonUI.errorMessage(infobox, this.responseText);
     }
   };
-  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/', true);
+  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/',
+             true);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   const data = {
     setting: 'email',
@@ -88,7 +94,8 @@ function passwordSubmit(infobox) {
     }
     return;
   }
-  const verifyPassword = document.getElementById('verify_password_input').value;
+  const verifyPassword =
+      document.getElementById('verify_password_input').value;
   if (password !== verifyPassword) {
     Common.CommonUI.errorMessage(infobox, 'Passwords do not match.');
     return;
@@ -104,7 +111,8 @@ function passwordSubmit(infobox) {
       Common.CommonUI.errorMessage(infobox, this.responseText);
     }
   };
-  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/', true);
+  xhttp.open('POST', config.siteUrl + '/account/account-settings/submit/',
+             true);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   const data = {
     setting: 'password',

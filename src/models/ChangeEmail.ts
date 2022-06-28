@@ -14,4 +14,5 @@ const changeEmailSchema = new Schema<IChangeEmail>({
   emailChangeExpire: { type: Date, expires: '24h', default: new Date() }
 });
 
-export const ChangeEmail = mongoose.model<IChangeEmail>('change_email', changeEmailSchema);
+export const ChangeEmail = mongoose.model<IChangeEmail>(
+    'change_email', changeEmailSchema);

@@ -28,8 +28,8 @@ export async function appInit(): Promise<express.Express> {
     ).catch(error => {
       console.error('ERROR: Failed to connect to  MongoDB.');
       console.error(error);
-      console.error('Application is now in an unstable state, please resolve ' +
-        'issue!');
+      console.error('Application is now in an unstable state, please ' + 
+        'resolve issue!');
     });
 
   const configData = await config().catch(error => {
@@ -54,7 +54,8 @@ export async function appInit(): Promise<express.Express> {
 
   // redirect no trailing slash to trailing slash
   app.use(function (req, res, next) {
-    if (!req.path.endsWith('/') && !req.path.slice(req.path.lastIndexOf('/') + 1).includes('.')) {
+    if (!req.path.endsWith('/') && !req.path.slice(
+        req.path.lastIndexOf('/') + 1).includes('.')) {
       const query = req.url.slice(req.path.length);
       res.redirect(301, req.path + '/' + query);
     } else {
@@ -64,7 +65,8 @@ export async function appInit(): Promise<express.Express> {
 
   app.use(cookieParser()); // for parsing cookies
   app.use(express.json()); // for parsing application/json
-  app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+  // for parsing application/x-www-form-urlencoded
+  app.use(express.urlencoded({ extended: true }));
 
   // Need to use the on-headers library to access the session cookie, because
   // express-session also uses this library to set the session cookie just
@@ -129,8 +131,10 @@ export async function appInit(): Promise<express.Express> {
     // need to disable eslint no-unused-vars cause otherwise it will complain
     // that next is an unused parameter - but is is needed because express only
     // uses this function to handle parameters if there are 4 parameters
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    app.use(function (err: unknown, req: Request, res: Response, next: NextFunction) {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    app.use(function (err: unknown, req: Request, res: Response,
+                      next: NextFunction) {
+    /* eslint-enable @typescript-eslint/no-unused-vars */
       console.error(err);
       res.status(500);
       res.send('500 Internal Server Error');

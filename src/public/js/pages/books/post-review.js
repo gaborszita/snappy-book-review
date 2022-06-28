@@ -20,7 +20,8 @@ function isbnValidator(infobox) {
     if (this.readyState == 4 && this.status == 200) {
       const data = JSON.parse(this.responseText);
       if (data.found) {
-        Common.CommonUI.successMessage(infobox, 'Book found!<br>' + data.title);
+        Common.CommonUI.successMessage(infobox, 'Book found!<br>' +
+            data.title);
         isbnValid = true;
       } else {
         Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
@@ -85,7 +86,8 @@ document.getElementById('isbn').addEventListener('keyup', function() {
   isbnValidator(document.getElementById('isbn_validator_response_field'));
 });
 
-document.getElementById('review_form').addEventListener('submit', function(event) {
+document.getElementById('review_form').addEventListener('submit',
+                                                        function(event) {
   event.preventDefault();
   formSubmit(document.getElementById('form_submit_info'));
 });

@@ -37,7 +37,9 @@ router.post('/reset-password/submit/', account.resetPasswordSubmit);
 router.get('/reset-password-reset/', account.resetPasswordReset);
 
 // POST request for reset password reset submit
-router.post('/reset-password-reset/submit/', account.resetPasswordResetSubmit);
+router.post('/reset-password-reset/submit/',
+            account.resetPasswordResetSubmit);
 
 // POST request for email change verification submit
-router.get('/verify-email-change/submit/', account.emailChangeVerificationSubmit);
+router.get('/verify-email-change/submit/',
+           account.emailChangeVerificationSubmit);

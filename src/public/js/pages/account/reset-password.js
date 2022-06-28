@@ -6,7 +6,11 @@ function formSubmit(infobox) {
     Common.CommonUI.errorMessage(infobox, 'Email is required.');
     return;
   }
-  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const emailRegex = new RegExp([
+    '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|',
+    '(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|',
+    '(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
+  ].join(''));
   if (!email.match(emailRegex) || email.length > 254) {
     if (email.length > 0) {
       Common.CommonUI.errorMessage(infobox, 'Email adress invalid.');

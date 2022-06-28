@@ -21,7 +21,12 @@ function formSubmit(infobox) {
     }
     return;
   }
-  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  ''
+  const emailRegex = new RegExp([
+    '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|',
+    '(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|',
+    '(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$'
+  ].join(''));
   const email = document.getElementById('email_input').value;
   if (!email.match(emailRegex) || email.length > 254) {
     if (email.length > 0) {
@@ -38,10 +43,12 @@ function formSubmit(infobox) {
     return;
   }
   if (!password.match(passwordRegex)) {
-    Common.CommonUI.errorMessage(infobox, 'Password invalid. (Please check password constraints.)');
+    Common.CommonUI.errorMessage(infobox, 'Password invalid. ' + 
+                                 '(Please check password constraints.)');
     return;
   }
-  const verifypassword = document.getElementById('verify_password_input').value;
+  const verifypassword = document.getElementById('verify_password_input')
+      .value;
   if (password !== verifypassword) {
     Common.CommonUI.errorMessage(infobox, 'Passwords do not match.');
     return;

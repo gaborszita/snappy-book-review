@@ -8,10 +8,12 @@ function formSubmit(infobox) {
     return;
   }
   if (!password.match(passwordRegex)) {
-    Common.CommonUI.errorMessage(infobox, 'Password invalid. (Please check password constraints.)');
+    Common.CommonUI.errorMessage(infobox, 'Password invalid. ' +
+                                 '(Please check password constraints.)');
     return;
   }
-  const verifypassword = document.getElementById('verify_password_input').value;
+  const verifypassword = document.getElementById('verify_password_input')
+      .value;
   if (password !== verifypassword) {
     Common.CommonUI.errorMessage(infobox, 'Passwords do not match.');
     return;
@@ -37,7 +39,8 @@ function formSubmit(infobox) {
       Common.CommonUI.errorMessage(infobox, this.responseText);
     }
   };
-  xhttp.open('POST', config.siteUrl + '/account/reset-password-reset/submit/', true);
+  xhttp.open('POST', config.siteUrl + '/account/reset-password-reset/submit/',
+             true);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   const data = {
     email: email,
