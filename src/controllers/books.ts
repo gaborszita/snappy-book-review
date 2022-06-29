@@ -180,7 +180,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response) => {
     return;
   }
 
-  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+  await check('isbn').isISBN().run(req);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
