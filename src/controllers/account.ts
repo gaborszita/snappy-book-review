@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { User, AccountState, IUser } from '../models/User';
 import { body, check, validationResult } from 'express-validator';
 import passport from 'passport';
-import { default as nodemailer } from 'nodemailer';
-import { default as crypto } from 'crypto';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 import { PasswordReset } from '../models/PasswordReset';
 import { ChangeEmail } from '..//models/ChangeEmail';
 

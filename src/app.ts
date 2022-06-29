@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import minify from 'express-minify';
 import enforce from 'express-sslify';
+import connectMongoDBSession from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
 
 // routes
