@@ -72,7 +72,7 @@ export const book = async (req: Request, res: Response,
       console.warn('User null when getting user name of rating');
     }
     const review = {
-      name: users[i].fullName,
+      name: users[i] != null ? users[i].fullName : 'Unknown user',
       rating: reviews[i].rating,
       comment: reviews[i].comment
     };
