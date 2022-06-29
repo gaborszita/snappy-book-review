@@ -112,7 +112,9 @@ export async function appInit(): Promise<express.Express> {
   app.set('view engine', 'ejs');
 
   // Serve static files
-  app.use(express.static(path.join(__dirname, './public')));
+  app.use(express.static(path.join(__dirname, './public'), {
+    maxAge: '1d'
+  }));
 
   // cache policy
   app.use(function (req, res, next) {
