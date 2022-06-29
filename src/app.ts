@@ -55,7 +55,7 @@ export async function appInit(): Promise<express.Express> {
 
   // enforce https if site is using https
   if (configData.sitePreferredProtocol === 'https') {
-    app.use(enforce.HTTPS());
+    app.use(enforce.HTTPS({ trustProtoHeader: true }));
   }
 
   // redirect no trailing slash to trailing slash
