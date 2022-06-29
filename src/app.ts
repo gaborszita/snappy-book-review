@@ -10,7 +10,7 @@ import onHeaders from 'on-headers';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import minify from 'express-minify';
-import { default as connectMongoDBSession } from 'connect-mongodb-session';
+import enforce from 'express-sslify';
 const MongoDBStore = connectMongoDBSession(session);
 
 // routes
@@ -50,6 +50,11 @@ export async function appInit(): Promise<express.Express> {
   if (process.env.NODE_ENV !== 'development') {
     app.use(compression());
     app.use(minify());
+  }
+
+  // enforce https if site is using https
+  if (configData.sitePreferredProtocol === 'https') {
+    app.use(enforce.HTTPS());
   }
 
   // redirect no trailing slash to trailing slash
