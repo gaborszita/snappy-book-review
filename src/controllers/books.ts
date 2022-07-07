@@ -220,7 +220,7 @@ export const isbnValidator = async (req: Request, res: Response) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).send('Invalid data');
+    res.send(JSON.stringify({ found: false }));
     return;
   }
 
