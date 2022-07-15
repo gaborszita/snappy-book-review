@@ -83,7 +83,7 @@ document.getElementById('review_form_container').addEventListener(
 document.getElementById('review_form').addEventListener('submit',
                                                         function(event) {
   event.preventDefault();
-  formSubmit(document.getElementById('form_submit_info'));
+  formSubmit(document.getElementById('review_form_submit_info'));
 });
 
 if (document.getElementById('delete_review') != null) {
