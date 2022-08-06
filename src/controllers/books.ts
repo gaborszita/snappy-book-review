@@ -7,12 +7,14 @@ import { check, validationResult } from 'express-validator';
 
 // search page
 export const search = async (req: Request, res: Response) => {
-  await check('q').isString().notEmpty().run(req);
+  await check('q').isString().notEmpty().run(req); // query string
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     res.status(400).send('Invalid data');
     return;
   }
+
   const query = req.query.q as string;
   const words = query.trim().split(/\s+/);
   const regexps = [];
@@ -20,11 +22,13 @@ export const search = async (req: Request, res: Response) => {
     // escape special characters in regex
     const escapedWord = word.replace(
         /(\[|\]|\(|\)|\{|\}|\*|\+|\?|\||\^|\$|\.|\\)/g, '\\$&');
+    // regex to match word at beginning, middle, or end of string
     const re = new RegExp(`( ${escapedWord} |^${escapedWord}|${escapedWord}$)`,
                           'i');
     regexps.push(re);
   }
 
+  // filter to match words either in author or title
   const filter = {
     $or: [
       {author: { $in: regexps }},
@@ -45,10 +49,10 @@ export const search = async (req: Request, res: Response) => {
 // book page
 export const book = async (req: Request, res: Response,
                            next: NextFunction) => {
-  const isbn = req.params.bookISBN;
+  const isbn = req.params.bookISBN; // book isbn in url param
   const book = await Book.findOne({ isbn: isbn });
   if (!book) {
-    return next();
+    return next(); // 404 error if book not found
   }
   const bookRating = book.rating.toFixed(1);
   const bookFullTitle = book.author + ': ' + book.title;
@@ -60,8 +64,10 @@ export const book = async (req: Request, res: Response,
     userWaits.push(User.findById(review.user));
   }
 
+  // wait for user queries
   const users = await Promise.all(userWaits);
   const reviewsResponse = [];
+  // get current user if logged in
   let currentUser;
   if (req.isAuthenticated()) {
     currentUser = req.user as IUser;
@@ -72,7 +78,7 @@ export const book = async (req: Request, res: Response,
       console.warn('User null when getting user name of rating');
     }
     const review = {
-      name: users[i].fullName,
+      name: users[i] != null ? users[i].fullName : 'Unknown user',
       rating: reviews[i].rating,
       comment: reviews[i].comment
     };
@@ -131,6 +137,7 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
 
   const user = req.user as IUser;
 
+  // find book in db or create it if doesn't exist yet
   let book;
   const existingBook = await Book.findOne({ isbn: isbn });
   if (existingBook) {
@@ -153,6 +160,7 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
     book = newBook;
   }
 
+  // modify existing review or create new one if it doesn't exist
   const existingReview = await Review.findOne({ user: user, book: book });
   if (existingReview) {
     existingReview.rating = rating;
@@ -180,7 +188,7 @@ export const deleteReviewSubmit = async (req: Request, res: Response) => {
     return;
   }
 
-  await check('isbn').isString().notEmpty().matches(/^\d+$/).run(req);
+  await check('isbn').isISBN().run(req);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -212,7 +220,7 @@ export const isbnValidator = async (req: Request, res: Response) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).send('Invalid data');
+    res.send(JSON.stringify({ found: false }));
     return;
   }
 
@@ -240,6 +248,7 @@ async function checkIsbn(isbn: string):
     Promise<{ author: string, title: string, isbn: string } | null> {
   const url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn;
 
+  // get isbn info using google books API using https.get
   const data = await ((): Promise<string> => {
     return new Promise((resolve, reject) => {
       https.get(url, (isbnRes) => {
@@ -260,6 +269,7 @@ async function checkIsbn(isbn: string):
     });
   })();
 
+  // parse google books API response to json format
   let body;
   try {
     body = JSON.parse(data);
@@ -269,10 +279,12 @@ async function checkIsbn(isbn: string):
   }
   const badFormatErrMsg = 'Google book API bad response format';
 
+  // validate data
   if (typeof body.totalItems !== 'number') {
     throw new Error(badFormatErrMsg);
   }
-  if (body.totalItems>0) {
+  if (body.totalItems>0) { // check if the API found a book
+    // validate data
     if (!Array.isArray(body.items) || body.items.length<1 ||
         body.items[0].volumeInfo == null ||
         body.items[0].volumeInfo.authors == null ||
@@ -283,6 +295,7 @@ async function checkIsbn(isbn: string):
         !Array.isArray(body.items[0].volumeInfo.industryIdentifiers)) {
       throw new Error(badFormatErrMsg);
     }
+    // get book authors
     const authors = body.items[0].volumeInfo.authors;
     let authorsStr = '';
     for (let i=0; i<authors.length; i++) {

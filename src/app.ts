@@ -10,7 +10,8 @@ import onHeaders from 'on-headers';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import minify from 'express-minify';
-import { default as connectMongoDBSession } from 'connect-mongodb-session';
+import enforce from 'express-sslify';
+import connectMongoDBSession from 'connect-mongodb-session';
 const MongoDBStore = connectMongoDBSession(session);
 
 // routes
@@ -50,6 +51,11 @@ export async function appInit(): Promise<express.Express> {
   if (process.env.NODE_ENV !== 'development') {
     app.use(compression());
     app.use(minify());
+  }
+
+  // enforce https if site is using https
+  if (configData.sitePreferredProtocol === 'https') {
+    app.use(enforce.HTTPS({ trustProtoHeader: true }));
   }
 
   // redirect no trailing slash to trailing slash
@@ -106,7 +112,9 @@ export async function appInit(): Promise<express.Express> {
   app.set('view engine', 'ejs');
 
   // Serve static files
-  app.use(express.static(path.join(__dirname, './public')));
+  app.use(express.static(path.join(__dirname, './public'), {
+    maxAge: '1d'
+  }));
 
   // cache policy
   app.use(function (req, res, next) {

@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { User, AccountState, IUser } from '../models/User';
 import { body, check, validationResult } from 'express-validator';
 import passport from 'passport';
-import { default as nodemailer } from 'nodemailer';
-import { default as crypto } from 'crypto';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 import { PasswordReset } from '../models/PasswordReset';
 import { ChangeEmail } from '..//models/ChangeEmail';
 
@@ -54,6 +54,7 @@ export const createAccountSubmit = async (req: Request, res: Response) => {
     return;
   }
 
+  // email verification hash
   const hash = crypto.randomBytes(20).toString('hex');
 
   const user = new User({
@@ -75,6 +76,7 @@ export const createAccountSubmit = async (req: Request, res: Response) => {
       'Thank you registering at Snappy Book Review!\r\n\r\n' +
       'This is your email verification link:\r\n' + link;
 
+  // send the verification email
   const transporter = nodemailer.createTransport(
     req.app.locals.config.smtpConnectionUrl);
   await transporter.sendMail({
@@ -112,6 +114,7 @@ export const accountSettingsSubmit = async (req: Request, res: Response) => {
     return;
   }
 
+  // check what setting the user wants to set
   await body('setting').isString().custom((value: string) => {
     return ['name', 'email', 'password'].includes(value);
   }).run(req);
@@ -152,10 +155,7 @@ export const accountSettingsSubmit = async (req: Request, res: Response) => {
       return;
     }
 
-    // send email verification link
-    const transporter = nodemailer.createTransport(
-        req.app.locals.config.smtpConnectionUrl);
-
+    // email change verification hash
     const hash = crypto.randomBytes(20).toString('hex');
 
     await ChangeEmail.updateOne({ user: user.id },
@@ -168,6 +168,10 @@ export const accountSettingsSubmit = async (req: Request, res: Response) => {
     const emailBody = 'Hello ' + user.firstName + '!\r\n\r\n' +
       'Please click on the following link to verify your ' +
       'email address change:\r\n' + link;
+
+    // send email change verification email
+    const transporter = nodemailer.createTransport(
+        req.app.locals.config.smtpConnectionUrl);
 
     await transporter.sendMail({
       from: req.app.locals.config.emailFrom,
@@ -224,6 +228,7 @@ export const emailChangeVerificationSubmit = async (req: Request,
     return;
   }
 
+  // check if user exists with email address user wants to change his to
   const existingUser = await User.findOne({ email: changeEmail.email });
   if (existingUser) {
     res.status(400).render('account/verify-email-change', {
@@ -304,6 +309,7 @@ export const resetPasswordSubmit = async (req: Request, res: Response) => {
     return;
   }
 
+  // generate password reset link hash
   const hash = crypto.randomBytes(20).toString('hex');
 
   await PasswordReset.updateOne({ user: user }, { hash: hash },
@@ -316,6 +322,7 @@ export const resetPasswordSubmit = async (req: Request, res: Response) => {
       'Please click on the following link to reset your ' +
       'password:\r\n' + link;
 
+  // send password reset email
   const transporter = nodemailer.createTransport(
       req.app.locals.config.smtpConnectionUrl);
   await transporter.sendMail({

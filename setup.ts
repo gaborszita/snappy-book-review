@@ -4,7 +4,7 @@ import readline from 'readline';
 import mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
 import { Config } from './src/models/Config';
-import { default as crypto } from 'crypto';
+import crypto from 'crypto';
 
 // used for getting user input
 const r1 = readline.createInterface({

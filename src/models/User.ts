@@ -1,6 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+// If a user is in pending activation state, the document automatically expires
+// and gets deleted after 24 hours (the verify email link expires in 24 hours).
+
 export enum AccountState {
   PendingActivation,
   Active,

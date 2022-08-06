@@ -11,9 +11,6 @@ function isbnValidator(infobox) {
   if (isbn==='') {
     Common.CommonUI.errorMessage(infobox, 'Please enter ISBN.');
     return;
-  } else if (isNaN(Number(isbn))) {
-    Common.CommonUI.errorMessage(infobox, 'ISBN invalid.');
-    return;
   }
   const xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
