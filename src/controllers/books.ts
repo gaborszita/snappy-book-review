@@ -214,6 +214,39 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
   }
 };
 
+// delete review submit
+export const deleteReviewSubmit = async (req: Request, res: Response) => {
+  if (!req.isAuthenticated()) {
+    res.status(400).send('Not logged in');
+    return;
+  }
+
+  await check('isbn').isISBN().run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+
+  const user = req.user as IUser;
+  const isbn = req.body.isbn;
+
+  const book = await Book.findOne({ isbn: isbn });
+  if (!book) {
+    res.status(400).send('Invalid data');
+    return;
+  } else {
+    const review = await Review.findOneAndDelete({ user: user, book: book });
+    if (!review) {
+      res.status(400).send('Invalid data');
+      return;
+    }
+    await updateBookRating(book);
+    res.send('OK');
+  }
+};
+
 // post summary submit
 export const postSummarySubmit = async (req: Request, res: Response) => {
   if (!req.isAuthenticated()) {
@@ -229,7 +262,7 @@ export const postSummarySubmit = async (req: Request, res: Response) => {
     res.status(400).send('Invalid data');
     return;
   }
-  
+
   const isbn = req.body.isbn;
   const summary = req.body.summary;
 
@@ -275,8 +308,8 @@ export const postSummarySubmit = async (req: Request, res: Response) => {
   }
 };
 
-// delete review submit
-export const deleteReviewSubmit = async (req: Request, res: Response) => {
+// delete summary submit
+export const deleteSummarySubmit = async (req: Request, res: Response) => {
   if (!req.isAuthenticated()) {
     res.status(400).send('Not logged in');
     return;
@@ -298,12 +331,11 @@ export const deleteReviewSubmit = async (req: Request, res: Response) => {
     res.status(400).send('Invalid data');
     return;
   } else {
-    const review = await Review.findOneAndDelete({ user: user, book: book });
-    if (!review) {
+    const summary = await Summary.findOneAndDelete({ user: user, book: book });
+    if (!summary) {
       res.status(400).send('Invalid data');
       return;
     }
-    await updateBookRating(book);
     res.send('OK');
   }
 };

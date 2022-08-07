@@ -70,7 +70,7 @@
           <% if (userReview != null) { %>
             <div id="user_review" class="collapse show">
               <span class="sbr-review-summary-comment-name-user">Your review</span>
-              <a class="sbr-review-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
+              <a class="sbr-review-summary-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
               <div class="sbr-rating-star">
                 <% for (let i=5; i>=1; i--) { %>
                   <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
@@ -103,11 +103,13 @@
             <h5>No summaries for this book</h5>
           <% } %>
           <% if (userSummary != null) { %>
-            <div>
+            <div id="user_summary" class="collapse show">
               <span class="sbr-review-summary-comment-name-user">Your summary</span>
+              <a class="sbr-review-summary-comment-user-delete" id="delete_summary" href="javascript:void(0)">Delete summary</a>
               <p><%- userSummary.summary.replace(/(\r\n|\r|\n)/g, '<br>') %></p>
+              <div id="summary_delete_error_info"></div>
             </div>
-            <% if (summaries.length>0) { %><hr><% } %>
+            <% if (summaries.length>0) { %><hr id="user_summary_hr"><% } %>
           <% } %>
           <% for (let k=0; k<summaries.length; k++) { %>
             <div>
