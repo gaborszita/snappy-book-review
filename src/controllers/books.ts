@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Book } from '../models/Book';
 import https from 'https';
 import { Review } from '../models/Review';
+import { Summary } from '../models/Summary';
 import { IUser, User } from '../models/User';
 import { check, validationResult } from 'express-validator';
 
@@ -59,13 +60,13 @@ export const book = async (req: Request, res: Response,
 
   const reviews = await Review.find({ book: book });
   // get user of each review
-  const userWaits = [];
+  const reviewUserWaits = [];
   for (const review of reviews) {
-    userWaits.push(User.findById(review.user));
+    reviewUserWaits.push(User.findById(review.user));
   }
 
   // wait for user queries
-  const users = await Promise.all(userWaits);
+  const reviewsUsers = await Promise.all(reviewUserWaits);
   const reviewsResponse = [];
   // get current user if logged in
   let currentUser;
@@ -74,15 +75,16 @@ export const book = async (req: Request, res: Response,
   }
   let userReview = null;
   for (let i=0; i<reviews.length; i++) {
-    if (users[i] == null) {
+    if (reviewsUsers[i] == null) {
       console.warn('User null when getting user name of rating');
     }
     const review = {
-      name: users[i] != null ? users[i].fullName : 'Unknown user',
+      name: reviewsUsers[i] != null ? reviewsUsers[i].fullName :
+          'Unknown user',
       rating: reviews[i].rating,
       comment: reviews[i].comment
     };
-    if (req.isAuthenticated() && users[i].id === currentUser.id) {
+    if (req.isAuthenticated() && reviewsUsers[i].id === currentUser.id) {
       // store review of user in a different variable as it will be
       // displayed separately from other reviews
       userReview = review;
@@ -90,12 +92,43 @@ export const book = async (req: Request, res: Response,
       reviewsResponse.push(review);
     }
   }
+
+  const summaries = await Summary.find({ book: book });
+  // get user of each review
+  const summariesUserWaits = [];
+  for (const summary of summaries) {
+    summariesUserWaits.push(User.findById(summary.user));
+  }
+  // wait for user queries
+  const summariesUsers = await Promise.all(summariesUserWaits);
+  const summariesResponse = [];
+  let userSummary = null;
+  for (let i=0; i<summaries.length; i++) {
+    if (summariesUsers[i] == null) {
+      console.warn('User null when getting user name of summary');
+    }
+    const summary = {
+      name: summariesUsers[i] != null ? summariesUsers[i].fullName :
+          'Unknown user',
+      summary: summaries[i].summary
+    };
+    if (req.isAuthenticated() && summariesUsers[i].id === currentUser.id) {
+      // store review of user in a different variable as it will be
+      // displayed separately from other reviews
+      userSummary = summary;
+    } else {
+      summariesResponse.push(summary);
+    }
+  }
+  
   const responseData = {
     title: bookFullTitle,
     rating: bookRating,
     isbn: isbn,
     userReview: userReview,
-    reviews: reviewsResponse
+    reviews: reviewsResponse,
+    userSummary: userSummary,
+    summaries: summariesResponse
   };
   res.render('book/book', responseData);
 };
@@ -178,6 +211,67 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
     await review.save();
     await updateBookRating(book);
     res.send('Review saved');
+  }
+};
+
+// post summary submit
+export const postSummarySubmit = async (req: Request, res: Response) => {
+  if (!req.isAuthenticated()) {
+    res.status(400).send('Not logged in');
+    return;
+  }
+
+  await check('isbn').isISBN().run(req);
+  await check('summary').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+  
+  const isbn = req.body.isbn;
+  const summary = req.body.summary;
+
+  const user = req.user as IUser;
+
+  // find book in db or create it if doesn't exist yet
+  let book;
+  const existingBook = await Book.findOne({ isbn: isbn });
+  if (existingBook) {
+    book = existingBook;
+  } else {
+    const data = await checkIsbn(isbn);
+    if (data == null) {
+      res.status(400).send('Invalid data');
+      return;
+    }
+
+    const newBook = new Book({
+      isbn: data.isbn,
+      author: data.author,
+      title: data.title,
+      rating: 0
+    });
+
+    await newBook.save();
+    book = newBook;
+  }
+
+  // modify existing summary or create new one if it doesn't exist
+  const existingSummary = await Summary.findOne({ user: user, book: book });
+  if (existingSummary) {
+    existingSummary.summary = summary;
+    await existingSummary.save();
+    res.send('Summary updated');
+  } else {
+    const summaryObj = new Summary({
+      user: user,
+      book: book,
+      summary: summary
+    });
+    await summaryObj.save();
+    res.send('Summary saved');
   }
 };
 

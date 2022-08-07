@@ -31,6 +31,9 @@
 
 // 6. Add additional custom code here
 
+// min width for tablet
+$tablet-width: 768px;
+
 // main button
 
 @mixin main-button {
@@ -222,13 +225,13 @@
 
 // book
 
-.sbr-review-comment-name {
+.sbr-review-summary-comment-name {
   color: #595959;
   font-size: 90%;
 }
 
-.sbr-review-comment-name-user {
-  @extend .sbr-review-comment-name;
+.sbr-review-summary-comment-name-user {
+  @extend .sbr-review-summary-comment-name;
   font-weight: bold;
 }
 
@@ -242,7 +245,7 @@
   background: #ff333366;
 }
 
-.sbr-leave-review-box {
+.sbr-leave-review-summary-box {
   @extend .border;
   @extend .border-primary;
   @extend .rounded;
@@ -250,8 +253,28 @@
   padding: 7px;
 }
 
-.sbr-leave-review-collapse-button {
+.sbr-leave-review-summary-collapse-button {
   @include main-button;
+}
+
+.sbr-reviews-summaries-container {
+  display: grid;
+}
+
+@media (min-width: $tablet-width) {
+  .sbr-reviews-summaries-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $tablet-width - 1px) {
+  .sbr-reviews-summaries-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sbr-reviews-summaries-container > div {
+  padding: .2rem;
 }
 
 // other minor stuff

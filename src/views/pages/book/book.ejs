@@ -24,61 +24,100 @@
         </tr>
       </table>
       <br>
-      <button type="button" class="sbr-leave-review-collapse-button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
-      <div class="sbr-leave-review-box collapse" id="review_form_container">
-        <form class="sbr-form" id="review_form">
-          <input type="hidden" id="isbn" value="<%= isbn %>">
-          <div class="sbr-form-field">
-            <label class="sbr-form-label">Rating</label>
-            <div class="sbr-rating-star sbr-rating-star-dynamic">
-              <% for (let i=5; i>=1; i--) { %>
-                <input type="radio" name="rating" id="form_rating_<%= i %>">
-                <label for="form_rating_<%= i %>"></label>
-              <% } %>
-            </div>
-          </div>
-          <div class="sbr-form-field">
-            <label for="comment_text_area">Comment</label>
-            <textarea class="form-control" id="comment_text_area" rows="3"></textarea>
-          </div>
-          <button type="submit" class="sbr-form-submit-btn">Submit review</button>
-        </form>
-        <div id="form_submit_info"></div>
-      </div>
-      <br><br>
-      <% if (userReview != null || reviews.length>0) { %>
-        <h4>Reviews:</h4>
-      <% } else { %>
-        <h5>No reviews for this book</h5>
-      <% } %>
-      <% if (userReview != null) { %>
-        <div id="user_review" class="collapse show">
-          <span class="sbr-review-comment-name-user">Your review</span>
-          <a class="sbr-review-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
-          <div class="sbr-rating-star">
-            <% for (let i=5; i>=1; i--) { %>
-              <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
-              <label for="user_review_rating_<%= i %>"></label>
-            <% } %>
-          </div>
-          <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
-          <div id="review_delete_error_info"></div>
-        </div>
-        <% if (reviews.length>0) { %><hr id="user_review_hr"><% } %>
-      <% } %>
-      <% for (let k=0; k<reviews.length; k++) { %>
+      <div class="sbr-reviews-summaries-container">
         <div>
-          <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
-          <div class="sbr-rating-star">
-            <% for (let i=5; i>=1; i--) { %>
-              <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
-              <label for="review_<%= k %>_rating_<%= i %>"></label>
-            <% } %>
+          <button type="button" class="sbr-leave-review-summary-collapse-button" data-bs-toggle="collapse" data-bs-target="#review_form_container" aria-expanded="false" aria-controls="review_form_container">Leave review</button>
+          <div class="sbr-leave-review-summary-box collapse" id="review_form_container">
+            <form class="sbr-form" id="review_form">
+              <input type="hidden" id="isbn" value="<%= isbn %>">
+              <div class="sbr-form-field">
+                <label class="sbr-form-label">Rating</label>
+                <div class="sbr-rating-star sbr-rating-star-dynamic">
+                  <% for (let i=5; i>=1; i--) { %>
+                    <input type="radio" name="rating" id="form_rating_<%= i %>">
+                    <label for="form_rating_<%= i %>"></label>
+                  <% } %>
+                </div>
+              </div>
+              <div class="sbr-form-field">
+                <label for="comment_text_area">Comment</label>
+                <textarea class="form-control" id="comment_text_area" rows="3"></textarea>
+              </div>
+              <button type="submit" class="sbr-form-submit-btn">Submit review</button>
+            </form>
+            <div id="review_form_submit_info"></div>
           </div>
-          <% if (reviews[k].comment!=null) { %><p><%- reviews[k].comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
         </div>
-        <% if (k+1<reviews.length) { %><hr><% } %>
-      <% } %>
+        <div>
+          <button type="button" class="sbr-leave-review-summary-collapse-button" data-bs-toggle="collapse" data-bs-target="#summary_form_container" aria-expanded="false" aria-controls="review_form_container">Post summary</button>
+          <div class="sbr-leave-review-summary-box collapse" id="summary_form_container">
+            <form class="sbr-form" id="summary_form">
+              <div class="sbr-form-field">
+                <label for="summary_text_area">Summary</label>
+                <textarea class="form-control" id="summary_text_area" rows="5"></textarea>
+              </div>
+              <button type="submit" class="sbr-form-submit-btn">Submit summary</button>
+            </form>
+            <div id="summary_form_submit_info"></div>
+          </div>
+        </div>
+        <div>
+          <% if (userReview != null || reviews.length>0) { %>
+            <h4>Reviews:</h4>
+          <% } else { %>
+            <h5>No reviews for this book</h5>
+          <% } %>
+          <% if (userReview != null) { %>
+            <div id="user_review" class="collapse show">
+              <span class="sbr-review-summary-comment-name-user">Your review</span>
+              <a class="sbr-review-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
+              <div class="sbr-rating-star">
+                <% for (let i=5; i>=1; i--) { %>
+                  <input type="radio" id="user_review_rating_<%= i %>" disabled<% if (Math.round(userReview.rating)===i) { %> checked<% } %>>
+                  <label for="user_review_rating_<%= i %>"></label>
+                <% } %>
+              </div>
+              <% if (userReview.comment!=null) { %><p><%- userReview.comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
+              <div id="review_delete_error_info"></div>
+            </div>
+            <% if (reviews.length>0) { %><hr id="user_review_hr"><% } %>
+          <% } %>
+          <% for (let k=0; k<reviews.length; k++) { %>
+            <div>
+              <span class="sbr-review-summary-comment-name"><%= reviews[k].name %></span>
+              <div class="sbr-rating-star">
+                <% for (let i=5; i>=1; i--) { %>
+                  <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
+                  <label for="review_<%= k %>_rating_<%= i %>"></label>
+                <% } %>
+              </div>
+              <% if (reviews[k].comment!=null) { %><p><%- reviews[k].comment.replace(/(\r\n|\r|\n)/g, '<br>') %></p><% } %>
+            </div>
+            <% if (k+1<reviews.length) { %><hr><% } %>
+          <% } %>
+        </div>
+        <div>
+          <% if (userSummary != null || summaries.length>0) { %>
+            <h4>Summaries:</h4>
+          <% } else { %>
+            <h5>No summaries for this book</h5>
+          <% } %>
+          <% if (userSummary != null) { %>
+            <div>
+              <span class="sbr-review-summary-comment-name-user">Your summary</span>
+              <p><%- userSummary.summary.replace(/(\r\n|\r|\n)/g, '<br>') %></p>
+            </div>
+            <% if (summaries.length>0) { %><hr><% } %>
+          <% } %>
+          <% for (let k=0; k<summaries.length; k++) { %>
+            <div>
+              <span class="sbr-review-summary-comment-name"><%= summaries[k].name %></span>
+              <p><%- summaries[k].summary.replace(/(\r\n|\r|\n)/g, '<br>') %></p>
+            </div>
+            <% if (k+1<summaries.length) { %><hr><% } %>
+          <% } %>
+        </div>
+      </div>
     </div>
     <%- include('../../includes/footer') %>
     <script src="<%= config.siteUrl %>/js/book/book.js"></script>

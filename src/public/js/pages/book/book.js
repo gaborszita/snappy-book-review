@@ -1,6 +1,6 @@
 'use strict';
 
-function formSubmit(infobox) {
+function reviewFormSubmit(infobox) {
   const isbn = document.getElementById('isbn').value;
 
   let checkedStar;
@@ -72,6 +72,30 @@ function deleteReview(ratingBox, errorInfoBox) {
   xhttp.send(JSON.stringify(data));
 }
 
+function summaryFormSubmit(infobox) {
+  const isbn = document.getElementById('isbn').value;
+
+  let summary = document.getElementById('summary_text_area').value;
+  Common.CommonUI.loadingIcon(infobox);
+
+  const xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      Common.CommonUI.successMessage(infobox, this.responseText);
+    } else if (this.readyState == 4) {
+      Common.CommonUI.errorMessage(infobox, this.responseText);
+    }
+  };
+
+  xhttp.open('POST', config.siteUrl + '/books/post-summary/submit/', true);
+  xhttp.setRequestHeader('Content-Type', 'application/json');
+  const data = {
+    isbn: isbn,
+    summary: summary
+  };
+  xhttp.send(JSON.stringify(data));
+}
+
 document.getElementById('review_form_container').addEventListener(
     'show.bs.collapse', function() {
   if (!Common.Account.checkLogin()) {
@@ -83,7 +107,7 @@ document.getElementById('review_form_container').addEventListener(
 document.getElementById('review_form').addEventListener('submit',
                                                         function(event) {
   event.preventDefault();
-  formSubmit(document.getElementById('form_submit_info'));
+  reviewFormSubmit(document.getElementById('review_form_submit_info'));
 });
 
 if (document.getElementById('delete_review') != null) {
@@ -93,3 +117,9 @@ if (document.getElementById('delete_review') != null) {
       document.getElementById('review_delete_error_info'));
   });
 }
+
+document.getElementById('summary_form').addEventListener('submit',
+                                                         function(event) {
+  event.preventDefault();
+  summaryFormSubmit(document.getElementById('summary_form_submit_info'))
+});

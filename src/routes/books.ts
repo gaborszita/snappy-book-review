@@ -15,6 +15,9 @@ router.get('/books/post-review/', books.postReview);
 // POST request for post review submit
 router.post('/books/post-review/submit/', books.postReviewSubmit);
 
+// POST request for post summary submit
+router.post('/books/post-summary/submit/', books.postSummarySubmit);
+
 // GET request for isbn validator
 router.get('/books/isbn-validator/', books.isbnValidator);
 
