@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Book } from '../models/Book';
 import https from 'https';
 import { Review } from '../models/Review';
+import { Summary } from '../models/Summary';
 import { IUser, User } from '../models/User';
 import { check, validationResult } from 'express-validator';
 
@@ -178,6 +179,67 @@ export const postReviewSubmit = async(req: Request, res: Response) => {
     await review.save();
     await updateBookRating(book);
     res.send('Review saved');
+  }
+};
+
+// post summary submit
+export const postSummarySubmit = async (req: Request, res: Response) => {
+  if (!req.isAuthenticated()) {
+    res.status(400).send('Not logged in');
+    return;
+  }
+
+  await check('isbn').isISBN().run(req);
+  await check('summary').isString().notEmpty().run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send('Invalid data');
+    return;
+  }
+  
+  const isbn = req.body.isbn;
+  const summary = req.body.summary;
+
+  const user = req.user as IUser;
+
+  // find book in db or create it if doesn't exist yet
+  let book;
+  const existingBook = await Book.findOne({ isbn: isbn });
+  if (existingBook) {
+    book = existingBook;
+  } else {
+    const data = await checkIsbn(isbn);
+    if (data == null) {
+      res.status(400).send('Invalid data');
+      return;
+    }
+
+    const newBook = new Book({
+      isbn: data.isbn,
+      author: data.author,
+      title: data.title,
+      rating: 0
+    });
+
+    await newBook.save();
+    book = newBook;
+  }
+
+  // modify existing summary or create new one if it doesn't exist
+  const existingSummary = await Summary.findOne({ user: user, book: book });
+  if (existingSummary) {
+    existingSummary.summary = summary;
+    await existingSummary.save();
+    res.send('Summary updated');
+  } else {
+    const summaryObj = new Summary({
+      user: user,
+      book: book,
+      summary: summary
+    });
+    await summaryObj.save();
+    res.send('Summary saved');
   }
 };
 
