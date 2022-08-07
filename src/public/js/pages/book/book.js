@@ -47,7 +47,7 @@ function reviewFormSubmit(infobox) {
 function deleteReview(ratingBox, errorInfoBox) {
   const isbn = document.getElementById('isbn').value;
 
-  ratingBox.classList.add('sbr-review-comment-user-deleting');
+  ratingBox.classList.add('sbr-review-summary-comment-user-deleting');
   const xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -59,7 +59,7 @@ function deleteReview(ratingBox, errorInfoBox) {
         userReviewHrElement.remove();
       }
     } else if (this.readyState == 4) {
-      ratingBox.classList.remove('sbr-review-comment-user-deleting');
+      ratingBox.classList.remove('sbr-review-summary-comment-user-deleting');
       Common.CommonUI.errorMessage(errorInfoBox, this.responseText);
     }
   };
@@ -76,6 +76,10 @@ function summaryFormSubmit(infobox) {
   const isbn = document.getElementById('isbn').value;
 
   let summary = document.getElementById('summary_text_area').value;
+  if (summary === '') {
+    Common.CommonUI.errorMessage(infobox, 'Summary cannot be empty!');
+    return;
+  }
   Common.CommonUI.loadingIcon(infobox);
 
   const xhttp = new XMLHttpRequest();
@@ -92,6 +96,34 @@ function summaryFormSubmit(infobox) {
   const data = {
     isbn: isbn,
     summary: summary
+  };
+  xhttp.send(JSON.stringify(data));
+}
+
+function deleteSummary(summaryBox, errorInfoBox) {
+  const isbn = document.getElementById('isbn').value;
+
+  summaryBox.classList.add('sbr-review-summary-comment-user-deleting');
+  const xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      new Common.Collapse(summaryBox, {
+        hide: true
+      });
+      const userSummaryHrElement = document.getElementById('user_summary_hr');
+      if (userSummaryHrElement != null) {
+        userSummaryHrElement.remove();
+      }
+    } else if (this.readyState == 4) {
+      summaryBox.classList.remove('sbr-review-summary-comment-user-deleting');
+      Common.CommonUI.errorMessage(errorInfoBox, this.responseText);
+    }
+  };
+
+  xhttp.open('POST', config.siteUrl + '/books/delete-summary/submit/', true);
+  xhttp.setRequestHeader('Content-Type', 'application/json');
+  const data = {
+    isbn: isbn
   };
   xhttp.send(JSON.stringify(data));
 }
@@ -123,3 +155,11 @@ document.getElementById('summary_form').addEventListener('submit',
   event.preventDefault();
   summaryFormSubmit(document.getElementById('summary_form_submit_info'))
 });
+
+if (document.getElementById('delete_summary') != null) {
+  document.getElementById('delete_summary').addEventListener('click',
+      function() {
+        deleteSummary(document.getElementById('user_summary'),
+            document.getElementById('summary_delete_error_info'));
+      });
+}

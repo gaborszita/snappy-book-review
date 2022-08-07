@@ -23,3 +23,6 @@ router.get('/books/isbn-validator/', books.isbnValidator);
 
 // POST request for delete review submit
 router.post('/books/delete-review/submit/', books.deleteReviewSubmit);
+
+// POST request for delete summary submit
+router.post('/books/delete-summary/submit/', books.deleteSummarySubmit);
