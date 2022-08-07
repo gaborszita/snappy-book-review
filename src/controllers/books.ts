@@ -60,13 +60,13 @@ export const book = async (req: Request, res: Response,
 
   const reviews = await Review.find({ book: book });
   // get user of each review
-  const userWaits = [];
+  const reviewUserWaits = [];
   for (const review of reviews) {
-    userWaits.push(User.findById(review.user));
+    reviewUserWaits.push(User.findById(review.user));
   }
 
   // wait for user queries
-  const users = await Promise.all(userWaits);
+  const reviewsUsers = await Promise.all(reviewUserWaits);
   const reviewsResponse = [];
   // get current user if logged in
   let currentUser;
@@ -75,15 +75,16 @@ export const book = async (req: Request, res: Response,
   }
   let userReview = null;
   for (let i=0; i<reviews.length; i++) {
-    if (users[i] == null) {
+    if (reviewsUsers[i] == null) {
       console.warn('User null when getting user name of rating');
     }
     const review = {
-      name: users[i] != null ? users[i].fullName : 'Unknown user',
+      name: reviewsUsers[i] != null ? reviewsUsers[i].fullName :
+          'Unknown user',
       rating: reviews[i].rating,
       comment: reviews[i].comment
     };
-    if (req.isAuthenticated() && users[i].id === currentUser.id) {
+    if (req.isAuthenticated() && reviewsUsers[i].id === currentUser.id) {
       // store review of user in a different variable as it will be
       // displayed separately from other reviews
       userReview = review;
@@ -91,12 +92,43 @@ export const book = async (req: Request, res: Response,
       reviewsResponse.push(review);
     }
   }
+
+  const summaries = await Summary.find({ book: book });
+  // get user of each review
+  const summariesUserWaits = [];
+  for (const summary of summaries) {
+    summariesUserWaits.push(User.findById(summary.user));
+  }
+  // wait for user queries
+  const summariesUsers = await Promise.all(summariesUserWaits);
+  const summariesResponse = [];
+  let userSummary = null;
+  for (let i=0; i<summaries.length; i++) {
+    if (summariesUsers[i] == null) {
+      console.warn('User null when getting user name of summary');
+    }
+    const summary = {
+      name: summariesUsers[i] != null ? summariesUsers[i].fullName :
+          'Unknown user',
+      summary: summaries[i].summary
+    };
+    if (req.isAuthenticated() && summariesUsers[i].id === currentUser.id) {
+      // store review of user in a different variable as it will be
+      // displayed separately from other reviews
+      userSummary = summary;
+    } else {
+      summariesResponse.push(summary);
+    }
+  }
+  
   const responseData = {
     title: bookFullTitle,
     rating: bookRating,
     isbn: isbn,
     userReview: userReview,
-    reviews: reviewsResponse
+    reviews: reviewsResponse,
+    userSummary: userSummary,
+    summaries: summariesResponse
   };
   res.render('book/book', responseData);
 };

@@ -69,7 +69,7 @@
           <% } %>
           <% if (userReview != null) { %>
             <div id="user_review" class="collapse show">
-              <span class="sbr-review-comment-name-user">Your review</span>
+              <span class="sbr-review-summary-comment-name-user">Your review</span>
               <a class="sbr-review-comment-user-delete" id="delete_review" href="javascript:void(0)">Delete review</a>
               <div class="sbr-rating-star">
                 <% for (let i=5; i>=1; i--) { %>
@@ -84,7 +84,7 @@
           <% } %>
           <% for (let k=0; k<reviews.length; k++) { %>
             <div>
-              <span class="sbr-review-comment-name"><%= reviews[k].name %></span>
+              <span class="sbr-review-summary-comment-name"><%= reviews[k].name %></span>
               <div class="sbr-rating-star">
                 <% for (let i=5; i>=1; i--) { %>
                   <input type="radio" id="review_<%= k %>_rating_<%= i %>" disabled<% if (Math.round(reviews[k].rating)===i) { %> checked<% } %>>
@@ -97,7 +97,25 @@
           <% } %>
         </div>
         <div>
-          <h4>Summaries:</h4>
+          <% if (userSummary != null || summaries.length>0) { %>
+            <h4>Summaries:</h4>
+          <% } else { %>
+            <h5>No summaries for this book</h5>
+          <% } %>
+          <% if (userSummary != null) { %>
+            <div>
+              <span class="sbr-review-summary-comment-name-user">Your summary</span>
+              <p><%- userSummary.summary.replace(/(\r\n|\r|\n)/g, '<br>') %></p>
+            </div>
+            <% if (summaries.length>0) { %><hr><% } %>
+          <% } %>
+          <% for (let k=0; k<summaries.length; k++) { %>
+            <div>
+              <span class="sbr-review-summary-comment-name"><%= summaries[k].name %></span>
+              <p><%- summaries[k].summary.replace(/(\r\n|\r|\n)/g, '<br>') %></p>
+            </div>
+            <% if (k+1<summaries.length) { %><hr><% } %>
+          <% } %>
         </div>
       </div>
     </div>
