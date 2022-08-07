@@ -76,6 +76,10 @@ function summaryFormSubmit(infobox) {
   const isbn = document.getElementById('isbn').value;
 
   let summary = document.getElementById('summary_text_area').value;
+  if (summary === '') {
+    Common.CommonUI.errorMessage(infobox, 'Summary cannot be empty!');
+    return;
+  }
   Common.CommonUI.loadingIcon(infobox);
 
   const xhttp = new XMLHttpRequest();
